@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <link rel="stylesheet" th:href="@{/css/homestyle.css}" />
+    <link rel="stylesheet" th:href="@{/css/mediaqueries.css}" />
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+     background: linear-gradient(to left, #0f726c, white,#0f726c);
+     
+
+    
+}
+
+
+.container {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+label {
+    display: block;
+    text-align: left;
+    font-weight: bold;
+    margin: 10px 0 5px;
+}
+
+input, button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+
+input {
+    border: 1px solid #ccc;
+}
+
+.primary-button {
+    background-color: #0f726c;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease;
+}
+
+.primary-button:hover {
+    background-color: black;
+}
+
+#preview {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    border: 2px solid #ddd;
+}
+
+        img {
+    width: 100px;   /* Set fixed width */
+    height: 100px;  /* Set fixed height */
+    object-fit: cover; /* Maintain aspect ratio and prevent stretching */
+    border-radius: 50%; /* Make it circular */
+    border: 2px solid #ddd; /* Add a border */
+    margin-bottom: 10px; /* Add some spacing */
+}
+    
+    .back-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 25px;
+        height: 25px;
+        background-color: white;
+        color: #0f726c;
+        border: none;
+        border-radius: 60%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .back-button:hover {
+        background-color: rgb(217, 212, 212);
+      }
+
+      .back-button i {
+        font-size: 20px;
+      }    
+    </style>
+</head>
+<body>
+ <button class="back-button" onclick="window.location.href='/auth/home'">
+      <i>&larr;</i> <!-- Left arrow symbol -->
+    </button>
+    <div class="container">
+        <h2>Edit Profile</h2>
+      <link rel="icon" href="/favicon3.png" type="image/x-icon">   
+        <!-- Display current profile picture -->
+<img th:src="@{'/uploads/' + ${session.loggedInUser.profilePicture}}" alt="Profile Picture" id="preview">
+
+
+
+
+        <form action="/auth/update-profile" method="post" enctype="multipart/form-data">
+            <label>First Name:</label>
+            <input type="text" name="firstName" th:value="${session.loggedInUser.firstName}" required>
+
+            <label>Last Name:</label>
+            <input type="text" name="lastName" th:value="${session.loggedInUser.lastName}" required>
+
+            <label>Email:</label>
+            <input type="email" name="email" th:value="${session.loggedInUser.email}" readonly>
+
+            <label>Profile Picture:</label>
+            <input type="file" name="profilePicture">
+
+            <button type="submit" class="primary-button">Update Profile</button>
+        
+        </form>
+        
+    </div>
+
+    <script>
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function(){
+                var output = document.getElementById('preview');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+        document.querySelector('input[name="profilePicture"]').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+
+            if (file) {
+                const maxSize = 2 * 1024 * 1024; // 2 MB in bytes
+                if (file.size > maxSize) {
+                    alert("File size should not exceed 2 MB.");
+                    event.target.value = ""; // Clear the file input
+                    document.getElementById('preview').src = ""; // Remove preview
+                    return;
+                }
+
+                // If valid, show preview
+                const reader = new FileReader();
+                reader.onload = function() {
+                    document.getElementById('preview').src = reader.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+    </script>
+</body>
+</html>

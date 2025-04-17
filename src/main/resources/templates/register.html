@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+    <link rel="stylesheet" th:href="@{/css/mediaqueries.css}" />
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            margin: 10;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0f726c, #a1d1d0);
+            font-family: 'Arial', sans-serif;
+        }
+
+        .registration-form {
+            background: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #0f726c;
+            font-size: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+            text-align: left;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #0f726c;
+        }
+
+        #sub {
+            background-color: #0f726c;
+            color: white;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        #sub:hover {
+            background-color: #095650;
+        }
+
+        p {
+            margin-top: 15px;
+            color: #555;
+        }
+
+        a {
+            color: #0f726c;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+         .error {
+            color: red;
+            font-size: 14px;
+            text-align: left;
+            margin-bottom: 10px;
+        }
+        .back-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 25px;
+        height: 25px;
+        background-color: white;
+        color: #0f726c;
+        border: none;
+        border-radius: 60%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .back-button:hover {
+        background-color: rgb(217, 212, 212);
+      }
+
+      .back-button i {
+        font-size: 20px;
+      }
+      .toggle-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #0f726c;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 0;
+}
+      
+    </style>
+</head>
+ <link rel="icon" href="/favicon3.png" type="image/x-icon">
+<body>
+<button class="back-button" onclick="history.back();">
+  <i>&larr;</i>
+</button>
+    <form class="registration-form" id="registrationForm" action="/auth/register" method="post" th:object="${customer}" >
+        <h2>Registration</h2>
+        <label for="fname">First Name:</label>
+        <input type="text" id="fname" placeholder="Enter your first name"  th:field="*{firstName}" required />
+
+        <label for="lname">Last Name:</label>
+        <input type="text" id="lname" placeholder="Enter your last name" th:field="*{lastName}" required />
+
+<label for="pass">Password:</label>
+<div style="position: relative;">
+  <input type="password" id="pass" placeholder="Enter your password" th:field="*{password}" required />
+  <button type="button" class="toggle-btn" onclick="togglePassword('pass', this)">Show</button>
+</div>        
+        <small style="display:block; text-align:left; margin-top:-10px; color: #555; font-size: 13px;">
+    Password must be at least 8 characters, include uppercase, lowercase, number, and special character.
+</small>
+        
+<label for="cp">Confirm Password:</label>
+<div style="position: relative;">
+  <input type="password" id="cp" placeholder="Confirm your password" required />
+  <button type="button" class="toggle-btn" onclick="togglePassword('cp', this)">Show</button>
+</div>
+
+        <label for="email">Email Address:</label>
+        <input type="text" id="email" placeholder="Enter your email" required th:field="*{email}"  />
+        <div class="error" id="emailError"></div>
+
+        <label for="age">Age:</label>
+        <input type="text" id="age" placeholder="Enter your age" th:field="*{age}" required />
+
+       <button type="submit" id="sub">Register Now</button>
+
+        <p>Already have an account? <a href="./userlogin">Login Now</a></p>
+    <p th:if="${success}" th:text="${success}" style="color: green; font-weight: bold; margin-bottom: 15px;"></p>
+    
+<p th:if="${error}" th:text="${error}" style="color: red;"></p>
+
+    </form>
+    
+</body>
+<script>
+function validateForm(event) {
+    let pass = document.getElementById("pass").value;
+    let confirmPass = document.getElementById("cp").value;
+    let email = document.getElementById("email").value;
+    let passError = document.getElementById("passError");
+    let emailError = document.getElementById("emailError");
+    
+    passError.innerHTML = "";
+    emailError.innerHTML = "";
+    
+    let isValid = true; // Flag to check validation status
+
+    // Email validation
+    let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailPattern.test(email)) {
+        emailError.innerHTML = "Invalid email format.";
+        isValid = false;
+    }
+    
+    // Password confirmation
+    if (pass !== confirmPass) {
+        passError.innerHTML = "Passwords do not match.";
+        isValid = false;
+    }
+    
+    
+    // Strong password validation
+    let strongPassPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()\-_=+{};:,<.>]).{8,}$/;
+    if (!strongPassPattern.test(pass)) {
+        passError.innerHTML += "<br>Password must be at least 8 characters long, and include uppercase, lowercase, number, and special character.";
+        isValid = false;
+    }
+
+    // ❌ Stop form submission if validation fails
+    if (!isValid) {
+        event.preventDefault(); // Stop form submission
+    }
+}
+document.getElementById("registrationForm").addEventListener("submit", function(event) {
+    validateForm(event);
+});
+
+function togglePassword(fieldId, button) {
+    const field = document.getElementById(fieldId);
+    if (field.type === "password") {
+        field.type = "text";
+        button.textContent = "Hide";
+    } else {
+        field.type = "password";
+        button.textContent = "Show";
+    }
+}
+
+</script>
+</html>

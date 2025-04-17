@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Booking Receipt | Board Game Club</title>
+    <link rel="stylesheet" th:href="@{/css/homestyle.css}" />
+    <link rel="stylesheet" th:href="@{/css/mediaqueries.css}" />
+     <link rel="icon" href="/favicon3.png" type="image/x-icon">
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+    <style>
+         .sfooter {
+        padding: var(--padding-inline-section);
+        background-color: #b9cde4;
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+      }
+      .sfooter-container {
+        flex-direction: row;
+        /* align-items: flex-start; */
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .game-card{
+      	height:400px;
+    	border: 1px solid #ddd;
+    	border-radius: 8px;
+   	    padding: 10px;
+        text-align: center;
+        background-color: var(--accent-color);
+        box-shadow: rgba(157, 232, 191, 0.1);
+        }
+        .booking-section {
+        background: white;
+        padding: 20px;
+        margin: 15px auto;
+        border-radius: 10px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+      }
+      .back-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 25px;
+        height: 25px;
+        background-color: white;
+        color: #0f726c;
+        border: none;
+        border-radius: 60%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .back-button:hover {
+        background-color: rgb(217, 212, 212);
+      }
+
+      .back-button i {
+        font-size: 20px;
+      }
+         
+</style>
+    <!-- Link to your existing CSS file -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+  <button class="back-button" onclick="window.location.href='/auth/bookings'">
+      <i>&larr;</i> <!-- Left arrow symbol -->
+    </button>
+    <!-- Top Banner -->
+    <div class="top-banner">
+      <div class="banner-text small-bold-text">Thank you for your booking!</div>
+    </div>
+
+    <nav>
+        <div class="container main-nav flex" style="margin-left:50px">
+          <a href="#" class="company-logo" >
+            <img src="/shudonlogo.jpg-removebg.png" alt="company logo"   />
+          </a>
+          <div class="nav-links" id="nav-links">
+            <ul class="flex">
+              <li><a href="/auth/home" class="hover-link">Home</a></li>
+            </ul>
+      </nav>
+    <!-- Receipt Section -->
+    <section class="container" style="align-content: center;">
+          <h1 style="text-align:center;">Booking Receipt</h1>
+      <div class="booking-section">
+        <div class="game-card" style="margin: 5px 5px 300px 300px;width:450px;">
+          <h2 style="color:var(secondary-text-color);"></h2>
+          <br/>
+           <p>Booking ID: <span th:text="'BK' + ${booking.id}"></span></p>
+    <p>Game: <span th:text="${booking.game.title}"></span></p>
+    <p>Date: <span th:text="${booking.date}"></span></p>
+    <p>Time Slot: <span th:text="${booking.timeSlot}"></span></p>
+    <p>Players: <span th:text="${booking.players}"></span></p>
+    <p>Total Paid: ₹<span th:text="${booking.amount}"></span></p>
+   <p>Booked on: 
+  <p>Booked On:
+  <span th:text="${#temporals.format(booking.createdAt, 'dd MMM yyyy, hh:mm a')}"></span>
+</p>
+
+   
+   
+    
+   
+   
+   <br/><br/>
+   <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
+  <a th:href="@{/download-receipt(bookingId=${booking.id})}" class="primary-button" download>
+    <i class="fa-solid fa-download"></i> Download PDF
+  </a>
+  <a href="/auth/gamesss" class="secondary-button">Book Another Session</a>
+</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="sfooter">
+        <div class="container flex sfooter-container">
+          <a href="#" class="hover-link">Privacy policy</a>
+          <a href="#" class="hover-link">Terms and Conditions</a>
+
+          <a href="https://www.facebook.com/shudongamestudio/"
+            ><i class="fa-brands fa-facebook"></i
+          ></a>
+          <a href="https://www.instagram.com/shudonclub/"
+            ><i class="fa-brands fa-instagram"></i
+          ></a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

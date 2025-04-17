@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Choose Your Pass</title>
+  <link rel="icon" href="/favicon3.png" type="image/x-icon">
+  <link rel="stylesheet" th:href="@{/css/mediaqueries.css}" />
+  <style>
+ body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .box-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 80px;
+    flex-wrap: wrap;
+  }
+
+  .box {
+    width: 320px;
+    min-height: 420px;
+    border-radius: 16px;
+    padding: 30px 25px;
+    text-align: center;
+    position: relative;
+    border: 4px solid #0f726c;
+    background: white;
+    box-shadow: 0 0 20px rgba(0,0,0,0.08);
+    transition: all 0.4s ease;
+    cursor: pointer;
+  }
+
+  .box-1 {
+    background: linear-gradient(to bottom, #ffffff, #d3f3f1);
+    color: #0f726c;
+  }
+
+  .box-2 {
+    background: linear-gradient(to bottom, #ff9b9b, rgb(255, 128, 128));
+    color: white;
+  }
+
+  .box h1, .box h2, .box h3, .box p {
+    margin: 15px 0;
+  }
+
+  .box h1, .box h3 {
+    font-size: 26px;
+  }
+
+  .box h2 {
+    font-size: 32px;
+    font-weight: bold;
+  }
+
+  .box p {
+    font-size: 18px;
+    line-height: 1.6;
+    padding: 0 8px;
+  }
+
+  /* Neon glow effect */
+  .box:hover, .selected {
+    transform: scale(1.05);
+    box-shadow:
+      0 0 8px #0f726c,
+      0 0 16px #0f726c,
+      0 0 24px #0f726c;
+    border-color: #0f726c;
+  }
+
+  .schedule-button {
+    background: linear-gradient(90deg, #0f726c, #0ca39c);
+    color: white;
+    padding: 16px 36px;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    margin: 40px 0;
+    transition: 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .schedule-button:hover {
+    transform: scale(1.05);
+    background: linear-gradient(90deg, #0ca39c, #0f726c);
+  }
+
+  @media (max-width: 768px) {
+    .box-container {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .box {
+      width: 90%;
+      margin-bottom: 25px;
+    }
+  }
+  .back-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 25px;
+        height: 25px;
+        background-color: white;
+        color: #0f726c;
+        border: none;
+        border-radius: 60%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .back-button:hover {
+        background-color: rgb(217, 212, 212);
+      }
+
+      .back-button i {
+        font-size: 20px;
+      } 
+  </style>
+</head>
+<body>
+ <button class="back-button"  onclick="goBackToDetails()">
+      <i>&larr;</i> <!-- Left arrow symbol -->
+    </button>
+
+  <input type="hidden" id="gameId" th:value="${gameId}">
+
+  <div class="box-container">
+    <div class="box box-1" onclick="selectBox(this, 'Solo Adventurer', 299)">
+      <h1>🎯 Solo Adventurer</h1>
+      <h2>Rs. 299</h2>
+      <p>
+        One night, endless possibilities!<br>
+        🧠 Strategize, 🏆 conquer, and 🎲 play your heart out!
+      </p>
+    </div>
+
+    <div class="box box-2" onclick="selectBox(this, 'Squad Pass', 279)">
+      <h3>👥 Squad Pass (3+ Players)</h3>
+      <h2>Rs. 279 <small>/person</small></h2>
+      <p>
+        More friends, more fun!<br>
+        🤝 Team up, 🎲 roll the dice, ⚔️ let the battles begin!
+      </p>
+    </div>
+  </div>
+
+  <!-- If NOT logged in -->
+<button class="schedule-button"
+        onclick="showLoginDialog()"
+        th:if="${session.loggedInUser == null}">🎟️ Proceed to Booking</button>
+
+<!-- If logged in -->
+<button class="schedule-button"
+        onclick="scheduleGame()"
+        th:if="${session.loggedInUser != null}">🎟️ Proceed to Booking</button>
+
+
+  <script>
+  function goBackToDetails() {
+	    const params = new URLSearchParams(window.location.search);
+	    const gameId = params.get('gameId');
+	    if (gameId) {
+	      window.location.href = `/auth/game-details?id=${gameId}`;
+	    } else {
+	      alert('Game ID not found!');
+	    }
+	  }
+    let selectedBox = null;
+    let selectedPass = "";
+    let selectedPrice = 0;
+
+    function selectBox(box, pass, price) {
+      if (selectedBox) selectedBox.classList.remove("selected");
+      box.classList.add("selected");
+      selectedBox = box;
+      selectedPass = pass;
+      selectedPrice = price;
+    }
+
+    function scheduleGame() {
+      let gameId = document.getElementById("gameId").value;
+      if (selectedPass) {
+        window.location.href = `/auth/book-session?id=${gameId}&pass=${selectedPass}&price=${selectedPrice}`;
+      } else {
+        alert("Please select a pass before proceeding.");
+      }
+    }
+    
+    function showLoginDialog() {
+        const modal = document.getElementById('loginModal');
+        modal.style.display = 'flex';
+      }
+
+      function redirectToLogin() {
+        window.location.href = '/auth/userlogin';
+      }
+      function closeLoginDialog() {
+    	  document.getElementById('loginModal').style.display = 'none';
+    	}
+
+  </script>
+  <div id="loginModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.5); z-index:10000; justify-content:center; align-items:center;">
+  
+  <div style="background:white; padding:30px; border-radius:10px; max-width:400px; text-align:center; position:relative;">
+
+    <!-- Close (X) button -->
+    <button onclick="closeLoginDialog()" style="position:absolute; top:10px; right:10px;
+      background:transparent; border:none; font-size:20px; cursor:pointer;">&times;</button>
+
+    <h2>Please Login First</h2>
+    <p>You must be logged in to book a session.</p>
+    <button onclick="redirectToLogin()" style="padding: 10px 20px; background:#4CAF50;
+      color:white; border:none; border-radius:5px;">Login Now</button>
+  </div>
+</div>
+  
+</body>
+</html>

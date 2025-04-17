@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" th:href="@{/css/homestyle2.css}" />
+    <link rel="stylesheet"  th:href="@{/css/media.css}"  />
+     <link rel="icon" href="/favicon3.png" type="image/x-icon">
+    <style>
+    .active-filter {
+    background-color:#44c720;
+    color: white;
+}
+.back-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 25px;
+        height: 25px;
+        background-color: white;
+        color: #0f726c;
+        border: none;
+        border-radius: 60%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .back-button:hover {
+        background-color: rgb(217, 212, 212);
+      }
+
+      .back-button i {
+        font-size: 20px;
+      }
+    </style>
+    <title>Browse games</title>
+    <link rel="icon" href="/favicon.png" type="image/x-icon" />
+  </head>
+  <body>
+   <button class="back-button" onclick="window.location.href='/auth/home'">
+      <i>&larr;</i> <!-- Left arrow symbol -->
+    </button>
+  
+    <!--TOP BANNER-->
+    <div class="top-banner">
+      <div class="container">
+        <div class="small-bold-text banner-text">
+          🎲 Browse new and interactive games here ! Based On your preferences
+        </div>
+      </div>
+    </div>
+    <!--nav bar -->
+    <nav>
+      <div class="container main-nav flex">
+        <a href="./home" class="company-logo">
+          <img th:src="@{/shudonlogo.png}"alt="company logo" />
+        </a>
+        <div class="nav-links" id="nav-links">
+          <ul class="flex">
+            <li><a href="/auth/home" class="hover-link">Home</a></li>
+            <li><a href="/auth/book-session2" class="hover-link">Book Sessions</a></li>
+           
+            
+            <!-- <li>
+              <a href="#" class="hover-link" id="toggle"
+                ><i class="fa-regular fa-user"></i
+              ></a>
+            </li> -->
+            <!-- <li>
+              <a href="#" class="hover-link nav-toggle" id="toggle"
+                ><i class="fa-solid fa-bars"></i
+              ></a>
+            </li> -->
+          </ul>
+        </div>
+        <a href="#" class="nav-toggle hover-link" id="toggle"
+          ><i class="fa-solid fa-bars"></i
+        ></a>
+      </div>
+    </nav>
+    <!--Filter section-->
+    <div class="aside-container">
+      <aside>
+        <!-- <h4>Filter Games</h4> -->
+        <header>
+          <div class="search-container">
+            <input
+              type="text"
+              id="searchBar"
+              placeholder="Search for games..."
+            />
+          </div>
+        </header>
+
+        <div class="filter-container">
+          <h3>Genre:</h3>
+          <button class="secondary-button filter-button" data-category="all" data-type="genre">
+            All
+          </button>
+          <button
+            class="secondary-button filter-button"
+            data-category="strategy" data-type="genre"
+          >
+            Strategy
+          </button>
+          <button class="secondary-button filter-button" data-category="family" data-type="genre">
+            Family
+          </button>
+          <button class="secondary-button filter-button" data-category="party" data-type="genre">
+            Party
+          </button>
+          <button class="secondary-button filter-button" data-category="economic" data-type="genre">
+            Economic
+          </button>
+          <button class="secondary-button filter-button" data-category="Expansion" data-type="genre">
+            Expansion
+          </button>
+          
+         
+        </div>
+
+        <div class="filter-container">
+          <h3>Time</h3>
+          <button class="secondary-button filter-button" data-category="15mins" data-type="time">
+            15 mins
+          </button>
+          <button class="secondary-button filter-button" data-category="20mins" data-type="time">
+            20 mins
+          </button>
+          <button class="secondary-button filter-button" data-category="30mins" data-type="time">
+            30 mins
+          </button>
+          <button class="secondary-button filter-button" data-category="60mins" data-type="time">
+            60 mins
+          </button>
+          <button class="secondary-button filter-button" data-category="90mins" data-type="time">
+            90 mins
+          </button>
+          <button
+            class="secondary-button filter-button"
+            data-category="120mins" data-type="time">
+            120 mins
+          </button>
+         
+        </div>
+      </aside>
+
+    
+
+    <!--SUB footer section -->
+    <div class="subfooter" style="position: fixed; bottom: 0; width: 100%">
+      <div class="container flex subfooter-container">
+        <a href="#" class="hover-link">Privacy policy</a>
+        <a href="#" class="hover-link">Terms and Conditions</a>
+
+        <a href="https://www.facebook.com/shudongamestudio/"
+          ><i class="fa-brands fa-facebook"></i
+        ></a>
+        <a href="https://www.instagram.com/shudonclub/"
+          ><i class="fa-brands fa-instagram"></i
+        ></a>
+      </div>
+    </div>
+
+      <!--Games grid section -->
+      <div class="game-grid-container">
+       <div class="game-grid" id="gameGrid">
+    
+ 
+  </div>
+</div>
+
+
+
+
+        </div>
+     
+    </div>
+</div>
+
+        <div class="load-btn">
+          <button class="load-more secondary-button" id="loadMorebtn">
+            Load More
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://kit.fontawesome.com/f45e8e3b9c.js"
+      crossorigin="anonymous"
+    ></script>
+ 
+    
+   <script>
+   var games = /*[[${games}]]*/ [];
+   console.log("Games Data Loaded:", games);
+
+
+</script>
+<script th:inline="javascript">var games = /*[[${games}]]*/ []; // Thymeleaf injects games data as JSON
+console.log("Games Data Loaded:", games);var games = /*[[${games}]]*/ [];
+console.log("Games Data Loaded:", games);
+
+let gamesPerPage = 6;
+let currentIndex = 0;
+let filteredGames = [...games]; // Store the filtered games globally
+
+let selectedGenres = new Set();
+let selectedTimes = new Set();
+
+function displayGames(startIndex, count, append = false) {
+    const gameGrid = document.getElementById("gameGrid");
+    const loadMoreBtn = document.getElementById("loadMorebtn");
+
+    if (!append) {
+        gameGrid.innerHTML = "";
+        currentIndex = 0; 
+    }
+
+    if (!filteredGames || filteredGames.length === 0) {
+        gameGrid.innerHTML = "<p>No games available.</p>";
+        loadMoreBtn.style.display = "none";
+        return;
+    }
+
+    let gamesToShow = filteredGames.slice(startIndex, startIndex + count);
+    
+    gamesToShow.forEach((game) => {
+        const gameCard = document.createElement("a");
+        gameCard.classList.add("game-card");
+        gameCard.href = `/auth/game-details?id=${game.id}`;
+        gameCard.innerHTML = `
+            <img src="${game.imageUrl}" alt="${game.title}">
+            <div class="game-info">
+                <h3>${game.title}</h3>
+                <p>Players: ${game.players}</p>
+                <p>Duration: ${game.time}</p>
+            </div>`;
+        gameGrid.appendChild(gameCard);
+    });
+
+    currentIndex += gamesToShow.length;
+
+    if (currentIndex >= filteredGames.length) {
+        loadMoreBtn.style.display = "none";
+    } else {
+        loadMoreBtn.style.display = "block";
+    }
+}
+
+// Function to filter games based on selected filters
+function filterGames() {
+    filteredGames = games.filter((game) => {
+    	 let gameGenre = game.genre ? game.genre.toLowerCase() : ""; 
+         let gameTime = game.time ? game.time.toLowerCase().replace(/\s+/g, "").trim() : ""; 
+
+         let genreMatch = selectedGenres.size === 0 || selectedGenres.has(gameGenre);
+         let timeMatch = selectedTimes.size === 0 || selectedTimes.has(gameTime);
+
+        return genreMatch && timeMatch;
+    });
+
+    updateGameCount();
+    displayGames(0, gamesPerPage, false);
+}
+
+// Function to update button labels with game count
+function updateGameCount() {
+    document.querySelectorAll(".filter-button").forEach(button => {
+        let category = button.getAttribute("data-category").toLowerCase();
+        let type = button.getAttribute("data-type");
+
+        let count = games.filter((game) => {
+            let gameGenre = game.genre ? game.genre.toLowerCase() : "";
+            let gameTime = game.time ? game.time.toLowerCase().replace(/\s+/g, "").trim() : "";
+
+            if (type === "genre") return gameGenre === category;
+            if (type === "time") return gameTime === category;
+            return false;
+        }).length;
+        if (category === "all") {
+            count = games.length; // Show total games count for "All"
+        }
+        button.innerText = `${category} (${count})`;
+    });
+
+    document.getElementById("gameGrid").dataset.total = filteredGames.length; // Update total count
+}
+
+// Function to toggle filter selection
+function toggleFilter(category, type, button) {
+    let filterSet = type === "genre" ? selectedGenres : selectedTimes;
+
+    if (category === "all") {
+        selectedGenres.clear();
+        selectedTimes.clear();
+        document.querySelectorAll(".filter-button").forEach(btn => btn.classList.remove("active-filter"));
+        button.classList.add("active-filter");
+    } else {
+    	 document.querySelector('.filter-button[data-category="all"]').classList.remove("active-filter");
+
+        if (filterSet.has(category)) {
+            filterSet.delete(category);
+            button.classList.remove("active-filter");
+        } else {
+            filterSet.add(category);
+            button.classList.add("active-filter");
+        }
+    }
+    filterGames();
+    updateGameCount();
+}
+
+
+// Attach event listeners to filter buttons
+document.querySelectorAll(".filter-button").forEach((button) => {
+    button.addEventListener("click", function () {
+        let category = this.getAttribute("data-category").toLowerCase();
+        let type = this.getAttribute("data-type");
+        toggleFilter(category, type, this);
+    });
+});
+
+// Initial Load
+
+document.addEventListener("DOMContentLoaded", function () {
+    updateGameCount();
+    displayGames(0, gamesPerPage, false);
+});
+
+// Load more games when the button is clicked
+document.getElementById("loadMorebtn").addEventListener("click", function () {
+    displayGames(currentIndex, gamesPerPage, true);
+});
+
+document.getElementById("searchBar").addEventListener("input", function () {
+    let searchTerm = this.value.toLowerCase().trim();
+    
+    filteredGames = games.filter((game) => {
+        let gameTitle = game.title ? game.title.toLowerCase() : "";
+        return gameTitle.includes(searchTerm);
+    });
+
+    displayGames(0, gamesPerPage, false);
+});
+
+
+</script>
+
+
+
+  </body>
+</html>

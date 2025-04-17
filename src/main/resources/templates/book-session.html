@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Session</title>
+   <link rel="stylesheet" th:href="@{/css/homestyle.css}" />
+<link rel="stylesheet" th:href="@{/css/mediaqueries.css}" />
+
+   
+    <style>
+      /* Import Modern Google Font */
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+      body {
+        font-family: 'Poppins', sans-serif;
+        background: #ffffff; /* Clean White Background */
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 32px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #0f726c;
+      }
+
+      /* Selected Game Display */
+      .selected-game-container {
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .selected-game img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-right: 15px;
+      }
+
+      .selected-game-name {
+        font-size: 20px;
+        font-weight: 600;
+        color: #0f726c;
+      }
+
+      /* Booking Sections */
+      .booking-section {
+        background: white;
+        padding: 20px;
+        margin: 15px auto;
+        border-radius: 10px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .booking-section:hover {
+        transform: scale(1.02);
+      }
+
+      label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 10px;
+        font-size: 16px;
+        color: #333;
+      }
+
+      input[type="date"],
+      select {
+        width: 100%;
+        padding: 12px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        transition: 0.3s ease-in-out;
+      }
+
+      input[type="date"]:hover,
+      select:hover {
+        border-color: #0f726c;
+      }
+
+      /* Confirm Button */
+      .primary-button {
+        width: 100%;
+        background: #0f726c;
+        color: white;
+        font-size: 18px;
+        font-weight: 600;
+        padding: 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .primary-button:hover {
+        background: #095650;
+        transform: scale(1.05);
+      }
+
+      /* Sub-footer */
+      .subfooter {
+        background: #f9f9f9;
+        padding: 15px;
+        text-align: center;
+        color: #333;
+        font-size: 14px;
+        margin-top: 20px;
+      }
+
+      /* Animations */
+      .fade-in {
+        animation: fadeIn 0.8s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .flex-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.players-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.players-input {
+    width: 80px; /* Smaller width */
+    padding: 8px;
+    font-size: 16px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.invite-button {
+    background: #0f726c;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.invite-button:hover {
+    background: #095650;
+    transform: scale(1.05);
+}
+.modal {
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    width: 500px;
+    border-radius: 12px;
+    box-shadow: 0px 0px 10px #aaa;
+    position: relative;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 22px;
+    cursor: pointer;
+}
+.back-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 25px;
+        height: 25px;
+        background-color: white;
+        color: #0f726c;
+        border: none;
+        border-radius: 60%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .back-button:hover {
+        background-color: rgb(217, 212, 212);
+      }
+
+      .back-button i {
+        font-size: 20px;
+      }
+
+    </style>
+  </head>
+   <link rel="icon" href="/favicon3.png" type="image/x-icon">
+  <body>
+  
+   <button class="back-button" onclick="goBackToPasses()">
+  <i>&larr;</i>
+</button>
+
+    <!--Top banner-->
+    <div class="top-banner fade-in">
+      <div class="container">
+        <div class="small-bold-text banner-text">
+          🎲 Book according to your time and interest. No boredom at weekends now!
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="main-nav container flex">
+      <div class="company-logo">
+        <img
+          src="/shudonlogo.jpg-removebg.png"
+          alt="Board Game Club Logo"
+        />
+      </div>
+      <div class="nav-links">
+        <ul class="flex">
+          <li><a href="/auth/home" class="hover-link">Home</a></li>
+          <li>
+            <a href="/auth/gamesss" class="hover-link">Games</a>
+          </li>
+          <li>
+            <a href="#Aboutus" class="hover-link">About Us</a>
+          </li>
+          <li>
+            <a href="#" class="hover-link" id="toggle"
+              ><i class="fa-regular fa-user"></i
+            ></a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Booking Section -->
+    <section class="container">
+      <h1 class="primary-text fade-in">Book Your Session</h1>
+<form id="booking-form">      <!-- Selected game display -->
+  <div class="selected-game-container">
+    <div class="selected-game">
+        <img id="selected-game-image" th:src="${game.imageUrl}" alt="Selected Game" />
+        <div class="selected-game-info">
+            <h2 th:text="${game.title}"></h2>
+            <p><strong>Duration:</strong> <span th:text="${game.time}"></span></p>
+        </div>
+    </div>
+</div>
+
+
+	<p><strong>Pass:</strong> <span th:text="${passName}"></span></p>
+            <p><strong>Price:</strong> ₹<span th:text="${passPrice}"></span></p>
+
+
+<input type="hidden" id="pass-name" th:value="${passName}" />
+<!-- Hidden input to store pass price -->
+
+	<div class="booking-section fade-in flex-container">
+    <div class="players-wrapper">
+        <label>Number of Players</label>
+        <input type="number" id="players-count" class="players-input" min="1" value="1" max="12"/>
+        
+        
+       
+    </div>
+    
+     <p>Total: ₹<span id="total-amount">0</span></p>
+     
+    <button class="invite-button" type="button" id="invite-friends-btn"  th:data-current-id="${session.loggedInUser?.id}" onclick="showInviteFriends()">Invite Friends</button>
+
+
+
+
+</div>
+
+<!-- Modal Popup for Invite -->
+<div id="invite-friends-modal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close-button" onclick="closeInviteModal()">&times;</span>
+    <h3>Invite a Friend to the Game</h3>
+    <ul id="invite-friends-list"></ul>
+  </div>
+</div>
+<input type="hidden" id="pass-price" th:value="${passPrice}" />
+
+	<input type="hidden" id="loggedInEmail" th:value="${session.loggedInUser.email}">
+	
+
+      <!-- Select Date Section -->
+      <div class="booking-section fade-in" onclick="openDatePicker()">
+        <label>Select Date</label>
+        <input type="date" id="date-picker" class="primary-button" />
+      </div>
+<div class="booking-section fade-in">
+  <label for="time-slot">Time Slot</label>
+  <select id="time-slot" class="primary-button" required>
+    <option value="" disabled selected hidden>Select Time Slot</option>
+    <option value="10:00 AM - 12:00 PM">10:00 AM - 12:00 PM</option>
+    <option value="12:00 PM - 2:00 PM">12:00 PM - 2:00 PM</option>
+    <option value="2:00 PM - 4:00 PM">2:00 PM - 4:00 PM</option>
+    <option value="4:00 PM - 6:00 PM">4:00 PM - 6:00 PM</option>
+    <option value="6:00 PM - 8:00 PM">6:00 PM - 8:00 PM</option>
+  </select>
+</div>
+
+
+      <!-- Confirm Booking Button -->
+      <div class="booking-section fade-in">
+        <button class="primary-button" type="button" id="btn">Confirm Booking & Pay</button><br /><br />
+      </div>
+    </section>
+    
+    </form>
+    
+
+    <!-- Sub-footer Section -->
+    <div class="subfooter fade-in">
+      <div class="container subfooter-container flex">
+        <p>© 2025 Board Game Club. All rights reserved.</p>
+      </div>
+    </div>
+
+    <script> 
+    function goBackToPasses() {
+        const params = new URLSearchParams(window.location.search);
+        const gameId = params.get('id'); // "id" is your gameId in book-session
+        if (gameId) {
+          window.location.href = `/passes?gameId=${gameId}`;
+        } else {
+          alert('Game ID not found!');
+        }
+      }
+    let lastInvitedFriendId = null;
+
+    
+
+    document.addEventListener("DOMContentLoaded", function () {
+        let today = new Date();
+        today.setHours(0, 0, 0, 0); // Reset time to midnight
+
+        let formattedDate = today.toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+        let datePicker = document.getElementById("date-picker");
+
+        // Set the minimum date to today
+        datePicker.setAttribute("min", formattedDate);
+
+        // Ensure user cannot select past dates
+        datePicker.addEventListener("change", function () {
+            let selectedDate = new Date(this.value);
+            selectedDate.setHours(0, 0, 0, 0);
+
+            if (selectedDate < today) {
+                alert("You cannot select a past date!");
+                this.value = formattedDate; // Reset to today's date
+            }
+        });
+    });
+
+   
+
+    // Open date picker on click
+    function openDatePicker() {
+        document.getElementById("date-picker").showPicker();
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const formattedToday = today.toISOString().split("T")[0];
+
+        const datePicker = document.getElementById("date-picker");
+        const timeSlotDropdown = document.getElementById("time-slot");
+
+        // ✅ Fix: Extract gameId from URL query parameters instead of pathname
+        const queryParams = new URLSearchParams(window.location.search);
+        const currentGameId = queryParams.get("id");
+        const currentGameIdInt = parseInt(currentGameId);
+        console.log("Current Game ID:", currentGameIdInt);
+
+        datePicker.setAttribute("min", formattedToday);
+
+        function updateTimeSlots() {
+            const selectedDateValue = datePicker.value;
+            if (!selectedDateValue) return;
+
+            const selectedDate = new Date(selectedDateValue);
+            selectedDate.setHours(0, 0, 0, 0);
+
+            const now = new Date();
+            const currentHours = now.getHours();
+            const currentMinutes = now.getMinutes();
+
+            fetch(`/api/bookings/date/${selectedDateValue}`)
+                .then(response => response.json())
+                .then(bookedData => {
+                    console.log("Fetched bookedData:", bookedData);
+
+                    const options = timeSlotDropdown.options;
+                    console.log("Checking each time slot...");
+
+                    for (let i = 0; i < options.length; i++) {
+                        const option = options[i];
+                        const timeRange = option.value;
+
+                        // ✅ Fix: Skip empty time ranges before using them
+                        if (!timeRange) {
+                            option.disabled = true;
+                            continue;
+                        }
+
+                        console.log("Time range:", timeRange);
+
+                        option.disabled = false;
+                        option.removeAttribute("title");
+
+                        // Convert time to 24-hour format
+                        const startTime = timeRange.split(" - ")[0];
+                        let [hour, minutePart] = startTime.split(":");
+                        let [minute, ampm] = minutePart.split(" ");
+                        hour = parseInt(hour);
+                        minute = parseInt(minute);
+                        if (ampm === "PM" && hour !== 12) hour += 12;
+                        if (ampm === "AM" && hour === 12) hour = 0;
+
+                        // Disable past time slots on the same day
+                        if (
+                            selectedDate.getTime() === today.getTime() &&
+                            (hour < currentHours || (hour === currentHours && minute < currentMinutes))
+                        ) {
+                            option.disabled = true;
+                            option.title = "Past time slot";
+                            continue;
+                        }
+
+                        // ✅ Safe to access bookedData now
+                        const bookedList = bookedData[timeRange] || [];
+                        const gameIds = bookedList.map(b => parseInt(b.gameId));
+                        const sameGameBooked = gameIds.includes(currentGameIdInt);
+                        const totalBooked = bookedList.length;
+
+                        if (sameGameBooked) {
+                            option.disabled = true;
+                            option.title = "This game is already booked in this slot.";
+                        } else if (totalBooked >= 4) {
+                            option.disabled = true;
+                            option.title = "This slot is full.";
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching slots:", error);
+                });
+        }
+
+        updateTimeSlots();
+        datePicker.addEventListener("change", updateTimeSlots);
+    });
+    function showInviteFriends() {
+        let currentCustomerId = document.getElementById("invite-friends-btn").getAttribute("data-current-id");
+
+        fetch(`/auth/friends/friends?customerId=${currentCustomerId}`)
+            .then(response => response.json())
+            .then(friends => {
+                const inviteList = document.getElementById("invite-friends-list");
+                inviteList.innerHTML = "";
+                friends.forEach(friend => {
+                    let listItem = document.createElement("li");
+                    listItem.style.display = "flex";
+                    listItem.style.justifyContent = "space-between";
+                    listItem.style.alignItems = "center";
+                    listItem.style.padding = "10px";
+                    listItem.style.borderBottom = "1px solid #ddd";
+
+                    listItem.innerHTML = `
+                        <div class="friend-info">
+                            <img class="profile-pic" src="/uploads/${friend.profilePicture || 'default.png'}" alt="Profile" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
+                            <span class="text-highlight">${friend.firstName}</span>
+                        </div>
+                        <button type="button" class="secondary-button" onclick="inviteFriend(${currentCustomerId}, ${friend.id})">Invite</button>
+
+                    `;
+                    inviteList.appendChild(listItem);
+                });
+
+                document.getElementById("invite-friends-modal").style.display = "flex";
+            });
+    }
+
+    function closeInviteModal() {
+        document.getElementById("invite-friends-modal").style.display = "none";
+    }
+
+    function inviteFriend(senderId, receiverId) {
+    	localStorage.setItem("lastInvitedFriendId", receiverId);
+    	
+    	
+    	   const gameName = document.querySelector(".selected-game-info h2").textContent;
+    	    const sessionDate = document.getElementById("date-picker").value;
+    	    const sessionTime = document.getElementById("time-slot").value;
+    	    const playerCount = document.getElementById("players-count").value;
+
+    	    // Validation: Ensure date and session time are selected
+    	    if (!sessionDate || !sessionTime) {
+    	        alert("Please select both a session date and time before inviting a friend.");
+    	        return;
+    	    }
+
+    	    console.log("Date selected:", sessionDate);
+
+       
+    	    
+
+        fetch("/auth/invitations/invite", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                sender: { id: senderId },
+                receiver: { id: receiverId },
+                gameName: gameName,
+                sessionDate: sessionDate,
+                playerCount: playerCount,
+                sessionTime: sessionTime
+                
+                
+            })
+        })
+        .then(response => response.text())
+        .then(msg => {
+            alert(msg);
+            closeInviteModal();
+        });
+    }
+    
+    
+    function acceptInvite(inviteId) {
+        fetch("/auth/invitations/accept", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ inviteId })  // 👈 only send inviteId now
+        })
+        .then(response => response.text())
+        .then(msg => {
+            alert(msg);
+
+            // ✅ NEW: Get updated player count for this invitation/game
+            fetch(`/auth/session/players-count/by-invite/${inviteId}`)
+                .then(res => res.json())
+                .then(data => {
+                    let playersInput = document.getElementById("players-count");
+                    if (playersInput) {
+                        playersInput.value = data.count;
+
+                        if (typeof updateTotal === "function") {
+                            updateTotal();
+                        }
+                    }
+
+                    let display = document.getElementById("player-count-display");
+                    if (display) {
+                        display.textContent = data.count;
+                    }
+                });
+        });
+    }
+
+
+    </script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+    	 let playersInput = document.getElementById("players-count");
+    	    let passNameElement = document.getElementById("pass-name");
+    	    let passName = passNameElement ? passNameElement.value.trim() : "";
+    	    let inviteBtn = document.getElementById("invite-friends-btn");
+
+    	    // Make sure inviteBtn exists
+    	    if (inviteBtn && passName) {
+    	        if (passName === "Solo Adventurer") {
+    	            inviteBtn.style.display = "inline-block"; // Show the button
+    	            inviteBtn.disabled = false;               // Enable if necessary
+    	        } else {
+    	            inviteBtn.style.display = "none";         // Hide the button
+    	            inviteBtn.disabled = true;                // Disable it just in case
+    	        }
+    	    }
+
+        // Set default min and value based on Pass Name
+        let minPlayers = passName === "Solo Adventurer" ? 1 : passName === "Squad Pass" ? 3 : 6;
+        let maxPlayers = 12;
+        
+        playersInput.min = minPlayers;
+        playersInput.max = maxPlayers; 
+        playersInput.value = minPlayers;
+
+       
+        // Prevent going below the minimum value
+        playersInput.addEventListener("input", function () {
+        	 let value = parseInt(this.value, 10);
+             if (value < minPlayers) {
+                 this.value = minPlayers;
+             } else if (value > maxPlayers) {
+                 this.value = maxPlayers; // Restrict to max value
+             }
+        });
+    });
+
+    
+    document.addEventListener("DOMContentLoaded", function () {
+        let playersInput = document.getElementById("players-count");
+        let totalAmountSpan = document.getElementById("total-amount");
+        let passPriceInput = document.getElementById("pass-price");
+
+        if (!passPriceInput || passPriceInput.value.trim() === "") {
+            console.error("Pass price input is missing or empty.");
+            return;
+        }
+
+        let passPrice = parseFloat(passPriceInput.value);
+        console.log("Pass Price from input:", passPrice); // Check value in console
+
+        if (isNaN(passPrice) || passPrice <= 0) {
+            console.error("Invalid pass price:", passPrice);
+            return;
+        }
+
+        function updateTotal() {
+            let playersCount = parseInt(playersInput.value, 10) || 0;
+            let totalAmount = playersCount * passPrice;
+            console.log("Players Count:", playersCount, "Total Amount:", totalAmount); // Debugging
+            totalAmountSpan.textContent = totalAmount;
+        }
+
+        // Initial calculation
+        updateTotal();
+
+        // Update when input changes
+        playersInput.addEventListener("input", updateTotal);
+    });
+
+   
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("btn").addEventListener("click", function (e) {
+    e.preventDefault();
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+      }
+
+      const gameId = getQueryParam("id");
+    const dateEl = document.getElementById("date-picker");
+    const timeSlotEl = document.getElementById("time-slot");
+    const playersEl = document.getElementById("players-count");
+    const totalAmountEl = document.getElementById("total-amount");
+   
+
+    if (!dateEl || !timeSlotEl || !playersEl || !totalAmountEl) {
+        alert("🚨 One or more booking fields are missing in your HTML!");
+        console.log({ dateEl, timeSlotEl, playersEl, totalAmountEl ,loggedInEmail}); // Helpful for console
+        return;
+    }
+
+    const date = dateEl.value;
+    const timeSlot = timeSlotEl.value;
+    const players = playersEl.value;
+    const totalAmount = parseFloat(totalAmountEl.textContent.trim());
+    const loggedInEmail = document.getElementById("loggedInEmail").value;
+    if (!loggedInEmail) {
+    	  alert("User email is missing! Please log in again.");
+    	  return;
+    	}
+    if (!date) {
+      alert("Please select a date for your booking.");
+      return;
+    }
+
+    if (!timeSlot) {
+      alert("Please select a time slot.");
+      return;
+    }
+
+    if (!confirm(`Do you want to proceed with payment of ₹${totalAmount}?`)) {
+      return;
+    }
+
+    // Step 3: Create Razorpay Order
+    fetch("/payment/create-order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ amount: totalAmount })
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("Failed to create Razorpay order");
+      return res.json();
+    })
+    .then(data => {
+      const options = {
+        key: data.key,
+        amount: data.amount,
+        currency: "INR",
+        name: "Shudon Board Club",
+        description: "Game Pass Payment",
+        order_id: data.orderId,
+        handler: function (response) {
+          alert("✅ Payment successful!");
+
+          const bookingData = {
+        		  email: document.getElementById("loggedInEmail").value,
+        		  date: date,
+            timeSlot: timeSlot,
+            amount: totalAmount,
+            players: players,
+            paymentId: response.razorpay_payment_id,
+            orderId: response.razorpay_order_id
+          };
+          console.log("Booking data being sent:", bookingData);
+
+          fetch(`/auth/book-session?id=${gameId}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(bookingData)
+          })
+          .then(response => {
+            if (!response.ok) throw new Error("Booking failed.");
+            return response.text();
+          })
+          .then(() => {
+            window.location.href = "/submit-feedback";
+          })
+          .catch(error => {
+        	  console.error("Payment Error:", err);
+            alert("❌ Error saving booking: " + error.message);
+          });
+        },
+        theme: {
+          color: "#0f726c"
+        }
+      };
+
+      const rzp = new Razorpay(options);
+
+   // Handle payment failure
+   rzp.on("payment.failed", function (response) {
+     console.error("❌ Payment Failed:", response.error);
+     alert("❌ Payment Failed: " + response.error.description);
+   });
+      rzp.open();
+    })
+    .catch(err => {
+      console.error("Payment Error:", err);
+      alert("❌ Payment process failed. Please try again.");
+    });
+  });
+});
+</script>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  </body>	
+</html>

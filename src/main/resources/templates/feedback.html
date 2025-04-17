@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="icon" href="/favicon3.png" type="image/x-icon">
+  <title>Feedback</title>
+  <link rel="stylesheet" th:href="@{/css/mediaqueries.css}" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f4;
+    }
+
+    .top {
+      height: 60vh;
+      width: 100%;
+      background-color: white;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      position: relative;
+    }
+
+    .bottom {
+      height: 40vh;
+      width: 100%;
+      background-color: #0f726c;
+    }
+
+    .main-box {
+      width: 70%;
+      height: 50vh;
+      background: linear-gradient(to bottom, #e2edeb, white);
+      border-radius: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      position: absolute;
+      bottom: -190px;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease-in-out;
+    }
+
+    .left-box {
+      width: 45%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+
+    img {
+      height: 100%;
+      width: 100%;
+      max-width: 300px;
+      object-fit: contain;
+    }
+
+    .right-box {
+      width: 55%;
+      height: 100%;
+      text-align: center;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .right-box h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: #0f726c;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+      max-width: 400px;
+      align-items: flex-start;
+      margin: 5px;
+    }
+
+    .right-box label {
+      font-size: 1rem;
+      font-weight: bold;
+      text-align: left;
+    }
+
+    .right-box input {
+      width: 100%;
+      max-width: 400px;
+      padding: 10px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      transition: border 0.3s;
+    }
+
+    .right-box input:focus {
+      border-color: #0f726c;
+      outline: none;
+    }
+
+    #exp {
+      height: 80px;
+    }
+
+    #btn {
+      height: 30px;
+      width: 100%;
+      max-width: 400px;
+      background-color: rgb(47, 43, 43);
+      font-size: 1rem;
+      font-weight: bold;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    #btn:hover {
+      background-color: #333;
+      transform: scale(1.02);
+    }
+
+    @media screen and (max-width: 768px) {
+      .main-box {
+        flex-direction: column;
+        height: auto;
+        padding: 30px 15px;
+      }
+
+      .left-box,
+      .right-box {
+        width: 100%;
+        height: auto;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+    }
+
+    /* Feedback Modal Styling */
+    .modal-overlay {
+      display: none;
+      /* Hidden by default */
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: #ffffff;
+      padding: 30px 25px;
+      border-radius: 14px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      animation: scaleIn 0.3s ease-in-out;
+    }
+
+    .modal-content h2 {
+      color: #0f726c;
+      margin-bottom: 10px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+
+    .modal-buttons button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      background: #0f726c;
+      color: white;
+      transition: background 0.3s ease;
+    }
+
+    .modal-buttons button:hover {
+      background: #095e59;
+    }
+
+    /* Animation */
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .rating {
+      direction: rtl;
+      unicode-bidi: bidi-override;
+      font-size: 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 5px;
+    }
+
+    .rating input[type="radio"] {
+      display: none;
+    }
+
+    .rating label {
+      color: #ccc;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .rating input[type="radio"]:checked~label,
+    .rating label:hover,
+    .rating label:hover~label {
+      color: gold;
+    }
+
+    .form-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+
+    textarea {
+      width: 100%;
+      max-width: 400px;
+      padding: 12px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      resize: vertical;
+      transition: border-color 0.3s ease;
+      margin-top: 5px;
+      margin-bottom: 12px;
+    }
+
+    textarea:focus {
+      border-color: #0f726c;
+      outline: none;
+    }
+
+    #btn {
+      margin-bottom: 12px;
+      background: #0f726c;
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 8px;
+      background: #ccc;
+      border-radius: 5px;
+      outline: none;
+      transition: background 0.3s ease;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: #0f726c;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    input[type=range]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: #0f726c;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .rating-slider-group input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      background: white;
+      border: 2px solid #ee0979;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s ease;
+    }
+
+    .form-group:last-child {
+      margin-top: 10px;
+      align-items: center;
+      width: 100%;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    textarea {
+      margin-bottom: 16px;
+    }
+
+
+    .rating-slider-group input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .rating-slider-group input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 12px;
+      background: linear-gradient(to right, #afe8dc, #0e7d65);
+      /* 🌈 Gradient */
+      border-radius: 10px;
+      outline: none;
+      margin-bottom: 10px;
+      transition: background 0.3s ease;
+    }
+
+    .main-box {
+      min-height: 70vh;
+      height: auto;
+      /* ✅ Allow it to grow */
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="top">
+    <div class="main-box">
+      <div class="left-box">
+        <img
+          src="https://static.vecteezy.com/system/resources/previews/026/296/925/non_2x/feedback-concept-tiny-people-leave-feedback-and-put-assessment-in-online-service-customer-survey-review-and-opinion-modern-flat-cartoon-style-illustration-on-white-background-vector.jpg?hl=en-IN">
+      </div>
+      <div class="right-box">
+        <h2>Feedback</h2>
+        <form action="/submit-feedback" method="post" id="feedbackForm">
+          <div class="form-group">
+            <label for="username" id="name">Name</label>
+            <input type="text" id="username" name="name" placeholder="Enter Name" required>
+          </div>
+          <div class="form-group">
+            <label for="email" id="email">Email</label>
+            <input type="email" id="ema" name="email" placeholder="Enter Email" required>
+          </div>
+
+          <div class="form-group rating-slider-group">
+            <label for="ratingSlider">Rate Us</label>
+            <input type="range" id="ratingSlider" name="rating" min="1" max="5" value="3" step="1" />
+            <p id="ratingLabel" class="animated-label">Rating: 3 - Average</p>
+          </div>
+          <div class="form-group">
+            <label for="exp">Tell us about your experience with us</label>
+            <textarea id="exp" name="experience" placeholder="Let us know what you liked or what could be improved..."
+              rows="4" required></textarea>
+
+          </div>
+          <div class="form-group">
+            <button type="submit" id="btn">Submit</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+  <div class="bottom"></div>
+  <div id="feedbackModal" class="modal-overlay" style="display: none">
+    <div class="modal-content">
+      <h2>🎉 Feedback Submitted!</h2>
+      <p>Thank you for your feedback.</p>
+      <div class="modal-buttons">
+        <button onclick="redirectHome()">OK</button>
+        <button onclick="shareLink()">Share</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+<script>
+  const slider = document.getElementById("ratingSlider");
+  const label = document.getElementById("ratingLabel");
+
+  const ratingDescriptions = {
+    1: "😠 Terrible",
+    2: "😕 Poor",
+    3: "😐 Average",
+    4: "😊 Good",
+    5: "😍 Excellent"
+  };
+
+  slider.addEventListener("input", function () {
+    const value = slider.value;
+    label.textContent = `Rating: ${value} - ${ratingDescriptions[value]}`;
+    label.classList.remove("animated-label");
+    void label.offsetWidth; // Trigger reflow
+    label.classList.add("animated-label");
+  });
+  document.getElementById("feedbackForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const formData = new FormData(this);
+
+    fetch("/submit-feedback", {
+      method: "POST",
+      body: formData
+    })
+      .then(response => {
+        if (!response.ok) throw new Error("Submission failed");
+        return response.json(); // 👈 Parse JSON response
+      })
+      .then(data => {
+        if (data.status === "success") {
+          document.getElementById("feedbackModal").style.display = "flex";
+        } else {
+          alert("Something went wrong: " + data.message);
+        }
+      })
+      .catch(error => {
+        alert("Something went wrong: " + error.message);
+      });
+  });
+
+  function shareLink() {
+    const shareData = {
+      title: "Board Game Club",
+      text: "Join us at the Board Game Club!",
+      url: "https://742c-2409-40c1-1015-36ad-51a1-225c-5033-952a.ngrok-free.app/auth/home" // ✅ must be HTTPS
+    };
+
+    if (navigator.share) {
+      navigator.share(shareData)
+        .then(() => console.log("Shared successfully"))
+        .catch(err => console.log("Share failed:", err));
+    } else {
+      alert("Sharing is not supported in your browser.");
+    }
+  }
+
+  function redirectHome() {
+    window.location.href = "/auth/home"; // Or your desired path
+  }
+</script>
+
+</html>

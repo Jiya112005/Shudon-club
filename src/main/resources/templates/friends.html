@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Find Friends</title>
+   <link rel="stylesheet" th:href="@{/css/homestyle.css}" />
+   <link rel="stylesheet" th:href="@{/css/mediaqueries.css}" />
+    <style>
+     
+      .container h2 {
+        text-align: center;
+        padding: 50px;
+      }
+      .buttons {
+        display: flex;
+        gap: 40px;
+        justify-content: center;
+      }
+
+      .fbutton {
+        border: 0.5px solid #0f726c;
+        background-color: #0f726c;
+        border-radius: 6px;
+        font-weight: 700;
+        color: white;
+        padding: 12px 20px;
+        transition: 0.2s ease-out;
+        cursor: pointer;
+      }
+      .fbutton:hover {
+        border-color: #0f726c;
+        color: orange;
+      }
+      .section h3 {
+        text-align: center;
+        margin: 20px;
+      }
+      /* User List Styles */
+      .list-all {
+        padding: 0;
+        margin: 0;
+      }
+
+      .user-item {
+        display: flex; /* Use flexbox for horizontal layout */
+        justify-content: space-between; /* Space between items */
+        align-items: center; /* Center items vertically */
+        padding: 10px; /* Padding around each list item */
+        border-bottom: 1px solid #ddd; /* Optional: Add a bottom border for separation */
+      }
+
+      .friend-info {
+        display: flex; /* Use flexbox for the profile picture and name */
+        align-items: center; /* Center items vertically */
+        gap: 10px; /* Space between the image and name */
+      }
+
+      img.profile-pic {
+        width: 50px; /* Set a fixed width for the profile picture */
+        height: 50px; /* Set a fixed height for the profile picture */
+        object-fit: cover; /* Ensure the image covers the area */
+        border-radius: 50%; /* Make the image circular */
+        border: 2px solid #ddd; /* Optional: Add a border around the image */
+      }
+      .sfooter {
+        padding: var(--padding-inline-section);
+        background-color: #b9cde4;
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+      }
+      .sfooter-container {
+        flex-direction: row;
+        /* align-items: flex-start; */
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .secondary-button {
+        cursor: pointer;
+      }
+      .text-highlight {
+        font-weight: 700;
+        padding: 20px;
+      }
+      .scroll-box {
+  max-height: 300px; /* Adjust height as needed */
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 5px;
+  margin: 10px auto;
+}
+     
+     .back-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 25px;
+        height: 25px;
+        background-color: white;
+        color: #0f726c;
+        border: none;
+        border-radius: 60%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .back-button:hover {
+        background-color: rgb(217, 212, 212);
+      }
+
+      .back-button i {
+        font-size: 20px;
+      } 
+    </style>
+  </head>
+   <link rel="icon" href="/favicon3.png" type="image/x-icon">
+  <body>
+   <button class="back-button" onclick="window.location.href='/auth/home'">
+      <i>&larr;</i> <!-- Left arrow symbol -->
+    </button>
+    <div class="top-banner">
+      <div class="container">
+        <div class="small-bold-text banner-text">
+          🎲 Connect with fellow board game enthusiasts!
+        </div>
+      </div>
+    </div>
+        <nav>
+        
+         
+         <nav style="display: flex; justify-content: flex-end; padding: 10px 20px; background-color: #f8f9fa;">
+  <ul style="list-style: none; margin: 0; padding: 0; display: flex;" class="flex">
+    <li><a href="/auth/home" class="hover-link" style="text-decoration: none; color: #0f726c; font-weight: bold;">Home</a></li>
+  </ul>
+</nav>
+    <div class="container">
+      <h2>Welcome to Friend Finder</h2>
+      <div class="buttons">
+        <button
+          id="find-friends-btn"
+          class="fbutton"
+          th:data-current-id="${session.loggedInUser?.id}"
+          onclick="fetchUsers()"
+        >
+          Find Friends
+        </button>
+        <button
+          id="pending-requests-btn"
+          class="fbutton"
+          th:data-current-id="${session.loggedInUser?.id}"
+          onclick="fetchPendingRequests()"
+        >
+          Pending Requests
+        </button>
+        <button
+          id="friends-btn"
+          class="fbutton"
+          th:data-current-id="${session.loggedInUser?.id}"
+          onclick="fetchFriends()"
+        >
+          My Friends
+        </button>
+        
+       <button
+    id="sent-requests-btn"
+    class="fbutton"
+    th:data-current-id="${session.loggedInUser?.id}"
+    onclick="fetchSentRequests()"
+  >
+    Sent Requests
+  </button>
+      </div>
+      <div>
+        <div class="section" id="users-list-section" style="display: none">
+          <h3>Available Users</h3>
+          <div class="scroll-box">
+          <ul id="users-list" class="list-all"></ul>
+ 	</div>
+        </div>
+
+        <div
+          class="section"
+          id="pending-requests-section"
+          style="display: none"
+        >
+          <h3>Pending Friend Requests</h3>
+           <div class="scroll-box">
+          <ul id="pending-requests" class="list-all"></ul>
+          </div>
+        </div>
+
+        <div class="section" id="friends-list-section" style="display: none">
+          <h3>Your Friends</h3>
+           <div class="scroll-box">
+          <ul id="friends-list" class="list-all"></ul>
+          </div>
+        </div>
+        
+        
+        <div class="section" id="sent-requests-section" style="display: none">
+  <h3>Sent Friend Requests</h3>
+   <div class="scroll-box">
+  <ul id="sent-requests-list" class="list-all"></ul>
+  </div>
+</div>
+      </div>
+
+
+      <div class="sfooter">
+        <div class="container flex sfooter-container">
+          <a href="#" class="hover-link">Privacy policy</a>
+          <a href="#" class="hover-link">Terms and Conditions</a>
+
+          <a href="https://www.facebook.com/shudongamestudio/"
+            ><i class="fa-brands fa-facebook"></i
+          ></a>
+          <a href="https://www.instagram.com/shudonclub/"
+            ><i class="fa-brands fa-instagram"></i
+          ></a>
+        </div>
+      </div>
+    </div>
+
+ 
+    <script>
+      function fetchUsers() {
+    	  console.log("Fetch users clicked");
+          let currentCustomerId = document.getElementById("find-friends-btn").getAttribute("data-current-id");
+
+          fetch(`/auth/friends/find-friends`)
+              .then(response => response.json())
+              .then(users => {
+                  const usersList = document.getElementById("users-list");
+                  usersList.innerHTML = "";
+                  users.forEach(user => {
+                	  console.log("Users fetched:", users);
+                      let listItem = document.createElement("li");
+                      listItem.style.display = "flex"; // Use flexbox for horizontal layout
+                      listItem.style.justifyContent = "space-between"; // Space between items
+                      listItem.style.alignItems = "center"; // Center items vertically
+                      listItem.style.padding = "10px"; // Padding around each list item
+                      listItem.style.borderBottom = "1px solid #ddd"; 
+                      listItem.innerHTML = `
+                          <div class="friend-info">
+                              <img class="profile-pic" src="/uploads/${user.profilePicture || 'default.png'}" alt="Profile">
+                              <span>${user.firstName}</span>
+                          </div>
+                          <button id="send-btn-${user.id}" class="secondary-button" onclick="sendFriendRequest(${user.id})">Send Request</button>
+
+                      `;
+                      usersList.appendChild(listItem);
+                  });
+                  document.getElementById("users-list-section").style.display = "block";
+                  document.getElementById("pending-requests-section").style.display = "none";
+                  document.getElementById("sent-requests-section").style.display = "none";
+                  document.getElementById("friends-list-section").style.display = "none";
+              });
+      }
+
+      function sendFriendRequest(receiverId) {
+    	    let senderId = document.getElementById("find-friends-btn").getAttribute("data-current-id");
+
+    	    fetch(`/auth/friends/send-request/${receiverId}`, {
+    	        method: "POST"
+    	    })
+    	    .then(response => response.text())
+    	    .then(data => {
+    	        console.log("Response:", data);
+    	        alert(data);
+    	        const sentBtn = document.getElementById(`send-btn-${receiverId}`);
+    	        if (sentBtn) {
+    	            sentBtn.closest("li").remove();
+    	        }
+    	    })
+    	    .catch(error => console.error("Error:", error));
+    	}
+
+      function fetchPendingRequests() {
+          let currentCustomerId = document.getElementById("find-friends-btn").getAttribute("data-current-id");
+
+          fetch(`/auth/friends/pending?receiverId=${currentCustomerId}`)
+              .then(response => response.json())
+              .then(requests => {
+                  const pendingRequestsList = document.getElementById("pending-requests");
+                  pendingRequestsList.innerHTML = "";
+                  if (requests.length === 0) {
+                      document.getElementById("pending-requests-section").style.display = "none";
+                  } else {
+                      requests.forEach(request => {
+                          let listItem = document.createElement("li");
+                          listItem.style.display = "flex"; // Use flexbox for horizontal layout
+                          listItem.style.justifyContent = "space-between"; // Space between items
+                          listItem.style.alignItems = "center"; // Center items vertically
+                          listItem.style.padding = "10px"; // Padding around each list item
+                          listItem.style.borderBottom = "1px solid #ddd"; 
+                          listItem.innerHTML = `
+                              <div class="friend-info">
+                                  <img class="profile-pic" src="/uploads/${request.sender.profilePicture || 'default.png'}" alt="Profile">
+                                  <span>${request.sender.firstName}</span>
+                              </div>
+                              <div>
+                                  <button onclick="respondToRequest(${request.id}, 'accept')" class="fbutton">Accept</button>
+                                  <button onclick="respondToRequest(${request.id}, 'reject')" class="secondary-button">Reject</button>
+                              </div>
+                          `;
+                          pendingRequestsList.appendChild(listItem);
+                      });
+                      document.getElementById("pending-requests-section").style.display = "block";
+                  }
+                  document.getElementById("users-list-section").style.display = "none";
+                  document.getElementById("sent-requests-section").style.display = "none";
+                  document.getElementById("friends-list-section").style.display = "none";
+              });
+      }
+
+      function respondToRequest(requestId, action) {
+          fetch(`/auth/friends/respond/${requestId}/${action}`, {
+              method: 'POST'
+          })
+          .then(response => response.text())
+          .then(message => {
+              alert(message);
+              fetchPendingRequests();
+              fetchFriends();
+          });
+      }
+
+      function fetchFriends() {
+    	    let currentCustomerId = document.getElementById("find-friends-btn").getAttribute("data-current-id");
+
+    	    fetch(`/auth/friends/friends?customerId=${currentCustomerId}`)
+    	        .then(response => response.json())
+    	        .then(friends => {
+    	        	 console.log("Friends fetched:", friends); 
+    	            const friendsList = document.getElementById("friends-list");
+    	            friendsList.innerHTML = "";
+    	            friends.forEach(friend => {
+    	                let listItem = document.createElement("li");
+    	                listItem.style.display = "flex"; 
+    	                listItem.style.justifyContent = "space-between"; 
+    	                listItem.style.alignItems = "center"; 
+    	                listItem.style.padding = "10px"; 
+    	                listItem.style.borderBottom = "1px solid #ddd"; 
+
+    	                listItem.innerHTML = `
+    	                    <div class="friend-info">
+    	                        <img class="profile-pic" src="/uploads/${friend.profilePicture || 'default.png'}" alt="Profile">
+    	                        <span class="text-highlight">${friend.firstName}</span>
+    	                    </div>
+    	                    <button class="secondary-button" onclick="removeFriend(${friend.id})">Remove Friend</button>
+    	                `;
+    	                friendsList.appendChild(listItem);
+    	            });
+    	            document.getElementById("friends-list-section").style.display = "block";
+    	            document.getElementById("sent-requests-section").style.display = "none";
+    	            document.getElementById("users-list-section").style.display = "none";
+    	            document.getElementById("pending-requests-section").style.display = "none";
+    	        });
+    	}
+
+      function removeFriend(friendId) {
+    	    let currentCustomerId = document.getElementById("find-friends-btn").getAttribute("data-current-id");
+
+    	    fetch(`/auth/friends/remove/${friendId}?customerId=${currentCustomerId}`, { 
+    	        method: 'DELETE'
+    	    })
+    	    .then(response => response.text())
+    	    .then(message => {
+    	        alert(message);
+    	        fetchFriends(); // Refresh the friends list after removal
+    	    })
+    	    .catch(error => {
+    	        console.error("Error removing friend:", error);
+    	        alert("Failed to remove friend. Please try again.");
+    	    });
+    	}
+      function fetchSentRequests() {
+    	  let currentCustomerId = document.getElementById("sent-requests-btn").getAttribute("data-current-id");
+
+    	  fetch(`/auth/friends/sent-requests?senderId=${currentCustomerId}`)
+    	    .then(response => response.json())
+    	    .then(sentRequests => {
+    	      console.log("Sent Requests:", sentRequests); // ✅ Log it!
+
+    	      const sentRequestsList = document.getElementById("sent-requests-list");
+    	      sentRequestsList.innerHTML = "";
+    	      if (sentRequests.length === 0) {
+    	        document.getElementById("sent-requests-section").style.display = "none";
+    	      } else {
+    	        sentRequests.forEach(request => {
+    	          let listItem = document.createElement("li");
+    	          listItem.style.display = "flex";
+    	          listItem.style.justifyContent = "space-between";
+    	          listItem.style.alignItems = "center";
+    	          listItem.style.padding = "10px";
+    	          listItem.style.borderBottom = "1px solid #ddd";
+    	          listItem.innerHTML = `
+    	            <div class="friend-info">
+    	              <img class="profile-pic" src="/uploads/${request.profilePicture || 'default.png'}" alt="Profile">
+    	              <span>${request.firstName}</span>
+    	            </div>
+    	            <span class="text-highlight">Request Sent</span>
+    	          `;
+    	          sentRequestsList.appendChild(listItem);
+    	        });
+    	        document.getElementById("sent-requests-section").style.display = "block";
+    	      }
+
+    	      document.getElementById("users-list-section").style.display = "none";
+    	      document.getElementById("pending-requests-section").style.display = "none";
+    	      document.getElementById("friends-list-section").style.display = "none";
+    	    })
+    	    .catch(error => {
+    	      console.error("Error fetching sent requests:", error);
+    	    });
+    	}
+
+
+    </script> 
+  </body>
+</html>

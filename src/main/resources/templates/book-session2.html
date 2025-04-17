@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Session</title>
+   <link rel="stylesheet" th:href="@{/css/homestyle.css}" />
+<link rel="stylesheet" th:href="@{/css/mediaqueries.css}" />
+
+    <link rel="icon" href="/favicon.png" type="image/x-icon" />
+    <style>
+      /* Import Modern Google Font */
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+      body {
+        font-family: 'Poppins', sans-serif;
+        background: #ffffff; /* Clean White Background */
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 32px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #0f726c;
+      }
+
+      /* Selected Game Display */
+      .selected-game-container {
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .selected-game img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-right: 15px;
+      }
+
+      .selected-game-name {
+        font-size: 20px;
+        font-weight: 600;
+        color: #0f726c;
+      }
+
+      /* Booking Sections */
+      .booking-section {
+        background: white;
+        padding: 20px;
+        margin: 15px auto;
+        border-radius: 10px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .booking-section:hover {
+        transform: scale(1.02);
+      }
+
+      label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 10px;
+        font-size: 16px;
+        color: #333;
+      }
+
+      input[type="date"],
+      select {
+        width: 100%;
+        padding: 12px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        transition: 0.3s ease-in-out;
+      }
+
+      input[type="date"]:hover,
+      select:hover {
+        border-color: #0f726c;
+      }
+
+      /* Confirm Button */
+      .primary-button {
+        width: 100%;
+        background: #0f726c;
+        color: white;
+        font-size: 18px;
+        font-weight: 600;
+        padding: 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .primary-button:hover {
+        background: #095650;
+        transform: scale(1.05);
+      }
+
+      /* Sub-footer */
+      .subfooter {
+        background: #f9f9f9;
+        padding: 15px;
+        text-align: center;
+        color: #333;
+        font-size: 14px;
+        margin-top: 20px;
+      }
+
+      /* Animations */
+      .fade-in {
+        animation: fadeIn 0.8s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .back-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 25px;
+        height: 25px;
+        background-color: white;
+        color: #0f726c;
+        border: none;
+        border-radius: 60%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .back-button:hover {
+        background-color: rgb(217, 212, 212);
+      }
+
+      .back-button i {
+        font-size: 20px;
+      }
+    </style>
+  </head>
+  <body>
+   <button class="back-button" href="/auth/home">
+      <i>&larr;</i> <!-- Left arrow symbol -->
+    </button>
+    <!--Top banner-->
+    <div class="top-banner fade-in">
+      <div class="container">
+        <div class="small-bold-text banner-text">
+          🎲 Book according to your time and interest. No boredom at weekends now!
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="main-nav container flex">
+      <div class="company-logo">
+        <img
+          src="/shudonlogo.jpg-removebg.png"
+          alt="Board Game Club Logo"
+        />
+      </div>
+      <div class="nav-links">
+        <ul class="flex">
+          <li><a href="/auth/home" class="hover-link">Home</a></li>
+          <li>
+            <a href="/auth/gamesss" class="hover-link">Games</a>
+          </li>
+          <li>
+            <a   href="#" id="toggle" class="hover-link">About Us</a>
+          </li>
+          <li>
+            <a href="#" class="hover-link" id="toggle"
+              ><i class="fa-regular fa-user"></i
+            ></a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Booking Section -->
+    <section class="container">
+       <link rel="icon" href="/favicon3.png" type="image/x-icon">
+
+   <div class="booking-section fade-in" >
+        <button class="primary-button" onclick="window.location.href='/auth/game-details2'">
+            Browse Games
+        </button>
+    </div>
+
+      <!-- Select Date Section -->
+     <div class="booking-section fade-in" onclick="openDatePicker()">
+    <label>Select Date</label>
+    <input type="date" id="date-picker" class="primary-button" min="" />
+</div>
+      <!-- Select Time Section -->
+      <div class="booking-section fade-in">
+        <label>Time Slot</label>
+        <select id="time-slot" class="primary-button">
+          <option value="10:00 AM - 12:00 PM">10:00 AM - 12:00 PM</option>
+          <option value="12:00 PM - 2:00 PM">12:00 PM - 2:00 PM</option>
+          <option value="2:00 PM - 4:00 PM">2:00 PM - 4:00 PM</option>
+          <option value="4:00 PM - 6:00 PM">4:00 PM - 6:00 PM</option>
+          <option value="6:00 PM - 8:00 PM">6:00 PM - 8:00 PM</option>
+        </select>
+      </div>
+
+      <!-- Confirm Booking Button -->
+      <div class="booking-section fade-in">
+        <button class="primary-button" type="submit" id="btn">Confirm Booking</button><br /><br />
+      </div>
+    </section>
+    
+    </form>
+    
+
+    <!-- Sub-footer Section -->
+    <div class="subfooter fade-in">
+      <div class="container subfooter-container flex">
+        <p>© 2025 Board Game Club. All rights reserved.</p>
+           
+      </div>
+    </div>
+
+
+<script>
+  document.getElementById("btn").addEventListener("click", function (event) {
+    // Example logic: check if a selected game is stored in localStorage
+    let selectedGame = localStorage.getItem("selectedGame");
+
+    if (!selectedGame) {
+      event.preventDefault(); // Stop form submission or navigation
+      document.getElementById("selectGameModal").style.display = "block";
+    } else {
+      // Proceed to actual booking logic, e.g. form submit
+      // You can remove event.preventDefault() or trigger form.submit()
+      // For example:
+      // document.getElementById("bookingForm").submit();
+    }
+  });
+  function closeModal() {
+	  document.getElementById("selectGameModal").style.display = "none";
+	}
+
+
+   
+
+    </script>
+    <!-- Modal -->
+<div id="selectGameModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.6); z-index:9999;">
+  <div style="background:white; padding:30px; border-radius:10px; width:90%; max-width:400px; margin:100px auto; text-align:center;">
+    <h2>Please Select a Game</h2>
+    <p>You need to select a game before confirming your booking.</p>
+    <button onclick="window.location.href='/auth/game-details2'" style="background:#0f726c; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;">
+      Browse Games
+    </button>
+    <br><br>
+    <button onclick="closeModal()" style="background:#ccc; color:black; padding:8px 15px; border:none; border-radius:5px; cursor:pointer;">Close</button>
+  </div>
+</div>
+    
+  </body>
+</html>

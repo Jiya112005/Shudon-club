@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" th:href="@{/css/homestyle.css}" />
+  <style>
+  /* Dropdown styles */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  cursor: pointer;
+  display: inline-block;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  padding: 10px 0;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
+.dropdown-menu li {
+  list-style: none;
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 10px 20px;
+  color: black;
+  text-decoration: none;
+}
+
+.dropdown-menu a:hover {
+  background-color: #f1f1f1;
+}.show-dropdown {
+  display: block !important;
+}
+/* Dropdown styles */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-toggle {
+  cursor: pointer;
+  font-weight: bold;
+  color: #333;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 160px;
+  z-index: 999;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 10px 0;
+  border-radius: 5px;
+}
+
+.dropdown-menu li {
+  list-style: none;
+}
+
+.dropdown-menu li a {
+  display: block;
+  padding: 10px 20px;
+  text-decoration: none;
+  color: black;
+}
+
+.dropdown-menu li a:hover {
+  background-color: #f0f0f0;
+}
+nav, .top-banner {
+  z-index: 500;
+  position: relative;
+}.dropdown-menu {
+  z-index: 9999; /* Overkill? Maybe. Effective? Yes. */
+  position: absolute;
+  background: white;
+}
+
+nav, .main-nav {
+  position: relative;
+  z-index: 10; /* lower than dropdown but above the page */
+  overflow: visible !important; /* let the dropdown live, man */
+}
+nav {
+  margin-bottom: 20px; /* pushes content below so it doesn’t bump heads */
+}
+
+.invitation-card {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  padding: 1rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  z-index: 999;
+  width: 250px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.invite-box {
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+
+.invite-box p {
+  margin: 4px 0;
+}
+
+.admin-login-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: linear-gradient(to right, #00c9ff, #92fe9d);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 50px;
+  font-weight: bold;
+  font-size: 14px;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: background 0.3s, transform 0.3s;
+  z-index: 9999;
+}
+
+.admin-login-button:hover {
+  background: linear-gradient(to right, #3cd3ad, #4cb8c4);
+  transform: scale(1.05);
+}
+.toast {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    min-width: 250px;
+    text-align: center;
+    transition: opacity 0.5s;
+}
+.toast-success {
+    background-color: #4CAF50;
+}
+.show {
+    opacity: 1;
+}
+  </style>
+<link rel="stylesheet" th:href="@{/css/mediaqueries.css}" />
+
+    <title>Shudon Board Game Club</title>
+    <link rel="icon" href="/favicon3.png" type="image/x-icon">
+  </head>
+ <script>
+  document.addEventListener("keydown", function (e) {
+    if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'a') {
+      const adminBtn = document.getElementById("adminBtn");
+      if (adminBtn) {
+        adminBtn.style.display = "block";
+      }
+    }
+  });
+</script>
+ 
+  
+  <body>
+  <a href="/admin/" id="adminBtn" class="admin-login-button" style="display: block;">
+  🔒 Admin
+</a>
+  
+    <!--TOP BANNER-->
+    <div class="top-banner">
+      <div class="container">
+        <div class="small-bold-text banner-text">
+          🎲 Join us for the Grand Opening Tournament every weekend!
+        </div>
+      </div>
+    </div>
+    <!--NAV BAR-->
+    <nav>
+      <div class="container main-nav flex">
+        <a href="#" class="company-logo">
+         <img th:src="@{/shudonlogo.png}" alt="company logo" />
+        </a>
+        <div class="nav-links" id="nav-links">
+          <ul class="flex">
+          <li th:if="${session.loggedInUser}" class="dropdown">
+    <span class="dropdown-toggle" onclick="toggleDropdown()">
+        👤 Welcome, <b th:text="${session.loggedInUser.firstName}"></b> ▼
+    </span>
+    <ul class="dropdown-menu" id="userDropdown">
+        <li><a href="/auth/friends" class="hover-link">Find Friends</a></li>
+        <li><a href="/auth/profile" class="hover-link">Edit Profile</a></li>
+        <li><a href="/auth/bookings" class="hover-link">My Bookings</a></li>
+    </ul>
+</li>
+
+<li th:if="${session.loggedInUser}" class="dropdown" style="position: relative;">
+    <span class="dropdown-toggle" onclick="toggleInvitationDropdown()">
+        📨 Invitations ▼
+    </span>
+    <div id="invitationDropdown" class="dropdown-menu invitation-card" style="display: none;">
+        <p>Loading invitations...</p>
+    </div>
+</li>
+      
+      <span id="userInfo" th:attr="data-userid=${session.loggedInUser != null ? session.loggedInUser.id : 'Guest'}"></span>
+      
+            <li><a href="/auth/gamesss" class="hover-link">Board Games</a></li>
+<li>
+  <a href="#" 
+     class="hover-link" 
+     onclick="handleBookSession(event)"
+     th:if="${session.loggedInUser == null}">Book Sessions</a>
+  <a href="/auth/book-session2"
+     class="hover-link"
+     th:if="${session.loggedInUser != null}">Book Sessions</a>
+</li>
+          
+          
+            
+           
+<li><a href="#Aboutus" class="hover-link">About Us</a></li>
+
+  <li th:unless="${session.loggedInUser}">
+              <a href="/auth/register" class="hover-link"><button class="primary-button">Sign-up</button></a>
+            </li>
+            <li th:unless="${session.loggedInUser}">
+              <a href="/auth/userlogin" class="hover-link"><button class="secondary-button">Log in</button></a>
+            </li>
+ <li th:if="${session.loggedInUser}">
+                    <a href="/auth/logout" class="hover-link"><button class="secondary-button">Logout</button></a>
+                </li>
+                  
+          </ul>
+        </div>
+      <div th:if="${successMessage}" th:class="${alertClass}" style="position: fixed; top: 10px; right: 10px; z-index: 9999;">
+    <p th:text="${successMessage}"></p>
+</div>
+      
+        <a href="#" class="nav-toggle hover-link" id="toggle"
+          ><i class="fa-regular fa-user"></i></a>
+      </div>
+    </nav>
+    <!--HEADER SECTION-->
+    <header>
+      <div class="container header-section flex">
+        <div class="header-left">
+          <h1>Welcome to the Board Game Community</h1>
+              
+
+       
+
+
+
+
+          
+          <p>
+            Discover a community of enthusiasts, explore a vast collection of
+            games, and enjoy weekly events. Let's roll the dice together!
+          </p>
+          <!-- <a href="#" class="primary-button get-started-btn">Get Started</a> -->
+        </div>
+        <div class="header-right">
+          <img src="/image1Home.png" alt="hero image" />
+        </div>
+      </div>
+    </header>
+
+    <!--GAMES SECTION-->
+    <section class="companies-section">
+      <div class="container">
+        <div class="small-bold text companies-header"><h2>Recommended Games</h2></div>
+        <div class="scrollers">
+          <i class="fa-solid fa-arrow-left-long scroll-left" id="leftbtn"></i>
+          <div class="rgames" style="grid-gap: 20px;">
+            <div>
+              <span><img src="/recommendedgames1.jpeg" alt="game1" srcset=""></span>
+              <span><img src="/recommededgames2.jpg" alt="game2" srcset=""></span>
+              <span><img src="/recommendedgames3.png" alt="game3" srcset=""></span>
+              <span><img src="/recommendedgames4.png" alt="game4" srcset=""></span>
+            </div>
+            <div>
+              <span><img src="/recommendedgames5.jpg" alt="game5" srcset=""></span>
+              <span><img src="/recommededgames6.jpg" alt="game6" srcset=""></span>
+              <span><img src="/recommendedgames7.png" alt="game7" srcset=""></span>
+              <span><img src="/recommendedgames8.jpg" alt="game8" srcset=""></span>
+            </div>
+          </div>
+        
+          <i class="fa-solid fa-arrow-right-long scroll-left" id="rightbtn" ></i>
+        </div>
+
+      </div>
+      
+    </section>
+
+    <!--CTA SECTION-->
+    <section class="cta-section" >
+      <div class="container flex cta-section-container">
+        <h2>Shudon Club</h2>
+        <p>Dive into immersive experience of where strategy meets adventure!
+            <h3> Perfect place for Game enthusiasts like you !</h3>
+        </p>
+    <div class="cta-image" ><video src="/video2Home.mp4"autoplay loop muted></video></div>
+      </div>
+    </section>
+
+   
+    <!--EXAMPLE SECTION-->
+    <section class="examples-section" id="passes">
+      <div class="container">
+        <div class="examples-header flex">
+          <h2>Book Play Passes here!</h2>
+          <!-- <a href="#" class="secondary-button"
+            >See more examples <i class="fa-solid fa-right-long"></i
+          ></a> -->
+        </div>
+        <div class="examples-area flex">
+          <a href="#" class="examples-card">
+            <h3 class="card-text">
+              Solo Adventurer  
+            </h3>
+          </a>
+          <a href="#" class="examples-card">
+            <h3 class="card-text">
+              Squad &nbsp; Passes
+            </h3>
+          </a>
+          <a href="#" class="examples-card">
+            <h3 class="card-text">Party &nbsp;&nbsp;&nbsp;&nbsp; Passes</h3>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!--CTA SECTION-->
+    <section class="cta-section">
+      <div class="container flex cta-section-container">
+        <h2>Plan Your Precious family time with us !</h2>
+        <p>Explore various board games you want to play according to the category you choose!</p>
+        <a href="#" class="primary-button">Get Started</a>
+      </div>
+    </section>
+
+    <!--FOOTER-->
+    <!--FOOTER-->
+<footer>
+    <div th:replace="~{fragments/aboutus :: aboutusContent}"></div>
+</footer>
+
+    <div class="subfooter">
+      <div class="container flex subfooter-container">
+        <a href="#" class="hover-link">Privacy policy</a>
+        <a href="#" class="hover-link">Terms and Conditions</a>
+        
+        <a href="https://www.facebook.com/shudongamestudio/"><i class="fa-brands fa-facebook"></i></a>
+        <a href="https://www.instagram.com/shudonclub/"><i class="fa-brands fa-instagram"></i></a>
+      </div>
+    </div>
+
+    <!-- <div class="spaccer" style="height: 100vh"></div> -->
+
+    <script
+      src="https://kit.fontawesome.com/f45e8e3b9c.js"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const toast = document.querySelector('.toast');
+        if (toast) {
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000); // hide after 3 seconds
+        }
+    });
+    document.addEventListener("keydown", function (e) {
+        if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'a') {
+          const adminBtn = document.getElementById("adminBtn");
+          if (adminBtn) {
+            adminBtn.style.display = "block";
+          }
+        }
+      });
+    fetch('Aboutus.html')
+    .then(response => response.text())
+    .then(data => {
+        document.getElementById('about-us').innerHTML = data;
+    })
+    .catch(error => {
+        console.error('Error loading About Us content:', error);
+    });
+      const toggleButton = document.getElementById("toggle");
+      const navLinks = document.getElementById("nav-links");
+      toggleButton.addEventListener("click", () => {
+        navLinks.classList.toggle("active");
+      });
+    </script>
+    
+    
+<script>function fetchUsers() {
+    fetch('/auth/customers/list') // Fetch all users except logged-in user's friends
+    .then(response => response.json())
+    .then(users => {
+        const usersList = document.getElementById("users-list");
+        usersList.innerHTML = ""; // Clear previous data
+
+        if (users.length === 0) {
+            usersList.innerHTML = "<p>No new users available</p>";
+        } else {
+            users.forEach(user => {
+                let listItem = document.createElement("li");
+                listItem.innerHTML = `${user.firstName} 
+                    <button onclick="sendFriendRequest(${user.id})">Send Request</button>`;
+                usersList.appendChild(listItem);
+            });
+        }
+
+        // Show the users list section
+        document.getElementById("users-list-section").style.display = "block";
+    });
+}
+
+//Function to send a friend request
+function sendFriendRequest(userId) {
+fetch(`/auth/friends/request/${userId}`, { method: 'POST' })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message); // Show success or failure message
+        fetchUsers(); // Refresh the list
+    });
+}
+function toggleDropdown() {
+    const dropdown = document.getElementById("userDropdown");
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+}
+
+// Optional: Close dropdown if clicked outside
+window.addEventListener("click", function (e) {
+    const toggle = document.querySelector(".dropdown-toggle");
+    const menu = document.getElementById("userDropdown");
+    if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+        menu.style.display = "none";
+    }
+});
+
+
+function toggleInvitationDropdown() {
+  const dropdown = document.getElementById("invitationDropdown");
+
+  if (dropdown.style.display === "none" || dropdown.style.display === "") {
+    dropdown.style.display = "block";
+    loadInvitations(); // fetch data only when opening
+  } else {
+    dropdown.style.display = "none";
+  }
+}
+
+function loadInvitations() {
+	
+	 const userId = document.getElementById("userInfo").dataset.userid;
+
+	 fetch(`/auth/invitations/invitations/pending/${userId}`)
+	  .then(response => response.json())
+	  .then(data => {
+	    console.log("Invitations response:", data);
+	    const invitations = data.invitations || data; // adapt to response type
+
+	    const container = document.getElementById("invitationDropdown");
+	    container.innerHTML = "";
+
+	    if (!Array.isArray(invitations) || invitations.length === 0) {
+	      container.innerHTML = "<p>No new invitations</p>";
+	      return;
+	    }
+
+	    invitations.forEach(invite => {
+	    	 console.log("Invite object:", invite);
+	      const inviteBox = document.createElement("div");
+	      inviteBox.className = "invite-box";
+	      inviteBox.innerHTML = `
+	        <p><strong>From:</strong> ${invite.senderFirstName}</p>
+	        <p><strong>Game:</strong> ${invite.gameName}</p>
+	       
+	        <button class="secondary-button" onclick="respondToInvite(${invite.inviteId}, true)">Accept & Pay</button>
+
+	        <button class="secondary-button" onclick="respondToInvite(${invite.inviteId}, false)">Reject</button>
+	      `;
+	      container.appendChild(inviteBox);
+	    });
+	  })
+	  .catch(err => {
+	    console.error("Fetch failed:", err);
+	    document.getElementById("invitationDropdown").innerHTML = "<p>Error loading invitations</p>";
+	  });
+}
+function respondToInvite(inviteId, accepted) {
+	  inviteId = Number(inviteId); // Ensure numeric ID
+
+	  if (!accepted) {
+	    // REJECT FLOW - no payment
+	    fetch(`/auth/invitations/respond/${inviteId}`, {
+	      method: 'POST',
+	      headers: {
+	        'Content-Type': 'application/json'
+	      },
+	      body: JSON.stringify({ action: 'reject' })
+	    })
+	    .then(() => loadInvitations());
+	    return;
+	  }
+
+	  // ACCEPT FLOW - Razorpay first
+	  fetch('/payment/razorpay-key')
+	    .then(res => res.text())
+	    .then(key => {
+	      const options = {
+	        key: key,
+	        amount: 29900, // ₹299 in paise
+	        currency: "INR",
+	        name: "Shudon",
+	        description: "Invite Acceptance Fee",
+	        handler: function (response) {
+	          // Payment success - now send accept request
+	          fetch(`/auth/invitations/respond/${inviteId}`, {
+	            method: 'POST',
+	            headers: {
+	              'Content-Type': 'application/json'
+	            },
+	            body: JSON.stringify({
+	              paymentId: response.razorpay_payment_id,
+	              orderId: response.razorpay_order_id
+	            })
+	          })
+	          .then(() => {
+	            alert("Payment successful and invite accepted!");
+	            location.reload();
+	          });
+	        },
+	        theme: {
+	          color: "#0f726c"
+	        }
+	      };
+	      const rzp = new Razorpay(options);
+	      rzp.open();
+	    });
+	}
+
+function handleBookSession(event) {
+	  event.preventDefault();
+	  const modal = document.getElementById('loginModal');
+	  modal.style.display = 'flex';
+	}
+
+	function redirectToLogin() {
+	  window.location.href = '/auth/userlogin';
+	}
+	 function closeLoginDialog() {
+   	  document.getElementById('loginModal').style.display = 'none';
+   	}
+
+	
+</script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<div id="loginModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.5); z-index:10000; justify-content:center; align-items:center;">
+  
+  <div style="background:white; padding:30px; border-radius:10px; max-width:400px; text-align:center; position:relative;">
+
+    <!-- Close (X) button -->
+    <button onclick="closeLoginDialog()" style="position:absolute; top:10px; right:10px;
+      background:transparent; border:none; font-size:20px; cursor:pointer;">&times;</button>
+
+    <h2>Please Login First</h2>
+    <p>You must be logged in to book a session.</p>
+    <button onclick="redirectToLogin()" style="padding: 10px 20px; background:#4CAF50;
+      color:white; border:none; border-radius:5px;">Login Now</button>
+  </div>
+</div>
+
+
+<script src="/scriptscroll.js"></script>
+  </body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+   <link rel="icon" href="/favicon3.png" type="image/x-icon">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game Details</title>
+    <link rel="stylesheet" th:href="@{/css/game-details.css}"/>
+    <link rel="stylesheet" th:href="@{/css/mediaqueries.css}" />
+    <style>
+    .bac-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 25px;
+        height: 25px;
+        background-color: white;
+        color: #0f726c;
+        border: none;
+        border-radius: 60%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .bac-button:hover {
+        background-color: rgb(217, 212, 212);
+      }
+
+      .bac-button i {
+        font-size: 20px;
+      }</style>
+  </head>
+  <body>
+   <button class="bac-button"onclick="window.location.href='/auth/gamesss'">
+      <i>&larr;</i> <!-- Left arrow symbol -->
+    </button>
+    <div class="container">
+      <div class="game-header">
+        <img th:src="${game.imageUrl}"id="gameImage"alt="Game Image" />
+        <div class="game-info">
+          <h1 th:text="${game.title}"></h1>
+          <p><strong>Players:</strong> <span th:text="${game.players}"></span></p>
+          <p><strong>Duration:</strong> <span th:text="${game.time}"></span></p>
+        </div>
+      </div>
+
+      
+
+      <div class="tips">
+        <h3>🎯About the Game</h3>
+        <p  th:text="${game.description}"></p>
+      </div>
+
+   <a th:href="@{/passes(gameId=${game.id})}" class="back-button">Buy Pass</a>
+    </div>
+
+  
+  </body>
+</html>

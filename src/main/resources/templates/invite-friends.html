@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Invite Friends</title>
+    <link rel="stylesheet" th:href="@{/css/mediaqueries.css}" />
+    <style>
+        .friend-info {
+            display: flex;
+            align-items: center;
+        }
+        .friend-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .back-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 25px;
+        height: 25px;
+        background-color: white;
+        color: #0f726c;
+        border: none;
+        border-radius: 60%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .back-button:hover {
+        background-color: rgb(217, 212, 212);
+      }
+
+      .back-button i {
+        font-size: 20px;
+      }
+    </style>
+</head>
+ <link rel="icon" href="/favicon3.png" type="image/x-icon">
+<body>
+    <h2>Invite Your Friends to a Game</h2>
+    <ul id="invite-friends-list"></ul>
+
+    <script>
+        // Extract customerId from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const customerId = urlParams.get("customerId");
+
+        fetch(`/auth/friends/friends?customerId=${customerId}`)
+            .then(res => res.json())
+            .then(friends => {
+                const inviteList = document.getElementById("invite-friends-list");
+                friends.forEach(friend => {
+                    const listItem = document.createElement("li");
+                    listItem.innerHTML = `
+                        <div class="friend-info">
+                            <img src="/uploads/${friend.profilePicture || 'default.png'}" alt="Profile">
+                            <span>${friend.firstName}</span>
+                        </div>
+                        <button onclick="inviteFriend(${customerId}, ${friend.id})">Invite</button>
+                    `;
+                    inviteList.appendChild(listItem);
+                });
+            });
+
+        function inviteFriend(senderId, receiverId) {
+        	  const gameName = document.getElementById("game-name").value;
+        	    const sessionDate = document.getElementById("session-date").value;
+        	    const sessionTime = document.getElementById("session-time").value;
+
+            fetch(`/auth/friends/invite?senderId=${senderId}&receiverId=${receiverId}&gameName=${gameName}&sessionDate=${sessionDate}&sessionTime=${sessionTime}`, {
+                method: 'POST'
+            })
+            .then(res => res.text())
+            .then(msg => {
+                alert(msg);
+            })
+            .catch(err => {
+                console.error("Error:", err);
+                alert("Invitation failed.");
+            });
+        }
+    </script>
+</body>
+</html>

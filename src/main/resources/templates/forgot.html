@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <link rel="icon" href="/favicon3.png" type="image/x-icon">
+    <title>Forgot Password | Shudon Board Game Club</title>
+    <link rel="stylesheet" th:href="@{/css/mediaqueries.css}" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to right, #0f726c, white);
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .container h1 {
+            color: #0f726c;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .container h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 22px;
+            font-weight: normal;
+        }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background: #0f726c;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s ease-in-out;
+        }
+
+        .btn:hover {
+            background: #095a53;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Success Dialog */
+        #dialog {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            font-family: Arial, sans-serif;
+            width: 300px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -55%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+
+        #dialog p {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        #dialog button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+
+        #dialog button:hover {
+            background: #45a049;
+        }
+        .back-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 25px;
+        height: 25px;
+        background-color: white;
+        color: #0f726c;
+        border: none;
+        border-radius: 60%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .back-button:hover {
+        background-color: rgb(217, 212, 212);
+      }
+
+      .back-button i {
+        font-size: 20px;
+      }
+    </style>
+</head>
+<body>
+ <button class="back-button" onclick="history.back();">
+      <i>&larr;</i> <!-- Left arrow symbol -->
+    </button>
+    <div class="container">
+        <h1>Forgot Password</h1>
+        <h2>Reset Your Password</h2>
+
+        <!-- Step 1: Enter Email for OTP -->
+        <form id="otpRequestForm">
+            <div class="input-group">
+                <label for="email">Enter Your Email:</label>
+                <input type="email" id="email" placeholder="Enter your email" required />
+            </div>
+            <button type="submit" class="btn">Send OTP</button>
+        </form>
+
+        <!-- Step 2: OTP Verification -->
+        <form id="otpVerifyForm" class="hidden">
+            <div class="input-group">
+                <label for="otp">Enter OTP:</label>
+                <input type="text" id="otp" placeholder="Enter OTP" required />
+            </div>
+            <button type="submit" class="btn">Verify OTP</button>
+        </form>
+
+        <!-- Step 3: Reset Password -->
+        <form id="resetPasswordForm" class="hidden">
+            <div class="input-group">
+                <label for="new-password">New Password:</label>
+                <input type="password" id="new-password" placeholder="Enter new password" required />
+            </div>
+            <div class="input-group">
+                <label for="confirm-password">Confirm Password:</label>
+                <input type="password" id="confirm-password" placeholder="Confirm new password" required />
+            </div>
+            <button type="submit" class="btn">Reset Password</button>
+        </form>
+    </div>
+
+    <!-- Success Dialog -->
+    <div id="dialog" class="hidden">
+        <p>Password changed successfully!</p>
+        <button onclick="closeDialog()">OK</button>
+    </div>
+
+    <script>
+        document.getElementById("otpRequestForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            let email = document.getElementById("email").value;
+
+            fetch("/auth/request-otp", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `email=${email}`
+            })
+            .then(response => response.text())
+            .then(data => {
+                if (data.includes("OTP sent")) {
+                    document.getElementById("otpRequestForm").classList.add("hidden");
+                    document.getElementById("otpVerifyForm").classList.remove("hidden");
+                    alert("OTP sent to your email!");
+                } else {
+                    alert("Email not registered.");
+                }
+            });
+        });
+
+        document.getElementById("otpVerifyForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            let email = document.getElementById("email").value;
+            let otp = document.getElementById("otp").value;
+
+            fetch("/auth/verify-otp", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `email=${email}&otp=${otp}`
+            })
+            .then(response => response.text())
+            .then(data => {
+                if (data.includes("OTP verified")) {
+                    document.getElementById("otpVerifyForm").classList.add("hidden");
+                    document.getElementById("resetPasswordForm").classList.remove("hidden");
+                } else {
+                    alert("Invalid OTP. Try again.");
+                }
+            });
+        });
+
+        document.getElementById("resetPasswordForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            let email = document.getElementById("email").value;
+            let newPassword = document.getElementById("new-password").value;
+            let confirmPassword = document.getElementById("confirm-password").value;
+
+            if (newPassword !== confirmPassword) {
+                alert("Passwords do not match!");
+                return;
+            }
+
+            fetch("/auth/reset-password", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `email=${email}&newPassword=${newPassword}`
+            })
+            .then(response => response.text())
+            .then(data => {
+                if (data.includes("successfully")) {
+                    showDialog();
+                } else {
+                    alert("Error resetting password.");
+                }
+            });
+        });
+
+        function showDialog() {
+            document.getElementById("dialog").classList.remove("hidden");
+        }
+
+        function closeDialog() {
+            document.getElementById("dialog").classList.add("hidden");
+            window.location.href = "/auth/userlogin";
+        }
+    </script>
+
+</body>
+</html>

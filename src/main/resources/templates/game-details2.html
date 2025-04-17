@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" th:href="@{/css/homestyle2.css}" />
+    <link rel="stylesheet"  th:href="@{/css/media.css}"  />
+    <style>
+    /* General Styles */
+body {
+    background-color: #f8f9fa;
+}
+
+/* Game Details Table */
+.container h2 {
+    text-align: center;
+    color: var(--primary-text-color);
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px auto;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background: var(--secondary-text-color);
+    color: white;
+    font-weight: bold;
+}
+
+td img {
+    border-radius: 8px;
+}
+
+tr:hover {
+    background: #f2f2f2;
+    transition: 0.3s;
+}
+
+/* Book Session Button */
+.btn-primary {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: var(--primary-text-color);
+    color: white;
+    border-radius: 4px;
+    transition: background 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-color-dark);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    table {
+        width: 100%;
+        display: block;
+        overflow-x: auto;
+    }
+
+    th, td {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .filter-container, .search-container {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .filter-button {
+        width: 100%;
+        text-align: center;
+    }
+}
+/* Updated primary button */
+.primary-button {
+    background-color: #ff6600; /* Change button background color */
+    border-radius: 6px;
+    font-weight: 700;
+    color: white; /* Change button text color */
+    padding: 12px 20px;
+    box-shadow: 0 0 5px rgba(255, 102, 0, 0.5); /* Slight glow effect */
+    transition: 0.3s ease-in-out;
+    text-align: center;
+}
+
+.primary-button:hover {
+    background-color: #cc5500; /* Darker shade on hover */
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(255, 102, 0, 0.7);
+}
+
+/* Updated secondary button */
+.secondary-button {
+    border: 2px solid #ff6600; /* Change border color */
+    border-radius: 6px;
+    font-weight: 700;
+    color: #ff6600 !important; /* Change text color */
+    padding: 12px 20px;
+    transition: 0.3s ease-in-out;
+}
+
+.secondary-button:hover {
+    background-color: #ff6600;
+    color: white !important; /* Change text color on hover */
+    border-color: #cc5500; /* Darker border on hover */
+}
+
+/* Change Book Session button */
+.btn-primary {
+    background-color: #ff6600 !important; /* Change to orange */
+    color: white !important; /* Change text color */
+    border-radius: 5px;
+    padding: 10px 15px;
+    transition: 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: #cc5500 !important; /* Darker shade */
+    color: white !important;
+    box-shadow: 0 0 10px rgba(255, 102, 0, 0.7);
+}
+.back-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 25px;
+        height: 25px;
+        background-color: white;
+        color: #0f726c;
+        border: none;
+        border-radius: 60%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .back-button:hover {
+        background-color: rgb(217, 212, 212);
+      }
+
+      .back-button i {
+        font-size: 20px;
+      }
+
+    </style>
+    <title>Browse games</title>
+    <link rel="icon" href="/favicon.png" type="image/x-icon" />
+  </head>
+   <link rel="icon" href="/favicon3.png" type="image/x-icon">
+  <body>
+  <button class="back-button" href="/auth/book-session2">
+      <i>&larr;</i> <!-- Left arrow symbol -->
+    </button>
+  
+    <!--TOP BANNER-->
+    <div class="top-banner">
+      <div class="container">
+        <div class="small-bold-text banner-text">
+          🎲 Browse new and interactive games here ! Based On your preferences
+        </div>
+      </div>
+    </div>
+    <!--nav bar -->
+    <nav>
+      <div class="container main-nav flex">
+        <a href="./home" class="company-logo">
+          <img src="/shudonlogo.jpg.png" alt="company logo" />
+        </a>
+        <div class="nav-links" id="nav-links">
+          <ul class="flex">
+            <li><a href="/auth/home" class="hover-link">Home</a></li>
+            <li><a href="/auth/book-session2" class="hover-link">Book Sessions</a></li>
+            <li><a href="#" class="hover-link">About us</a></li>
+       
+          
+          </ul>
+        </div>
+        <a href="#" class="nav-toggle hover-link" id="toggle"
+          ><i class="fa-solid fa-bars"></i
+        ></a>
+      </div>
+    </nav>
+    
+      <div class="container">
+        <h2>Game Details</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Title</th>
+                    <th>Genre</th>
+                    <th>Players</th>
+                    <th>Duration</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="game : ${games}">
+                    <td>
+                        <img th:src="${game.imageUrl}" alt="Game Image" width="100" />
+                    </td>
+                    <td th:text="${game.title}"></td>
+                    <td th:text="${game.genre}"></td>
+                    <td th:text="${game.players}"></td>
+                    <td th:text="${game.time}"></td>
+                    <td th:text="${game.description}"></td>
+                    <td>
+                        <a  th:href="@{/passes(gameId=${game.id})}" class="btn btn-primary">Buy Passes</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+   
+
+
+    
+     
+
+  </body>
+</html>
